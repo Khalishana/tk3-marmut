@@ -6,29 +6,24 @@
 
 {% block content %}  
 
-<div class = "login">
-    
-    <h1>Register</h1>  
-
-        <form method="POST" >  
-            {% csrf_token %}  
-            <table>  
-                {{ form.as_table }}  
-                <tr>  
-                    <td></td>
-                    <td><input type="submit" name="submit" value="Daftar"/></td>  
-                </tr>  
-            </table>  
+<div style="background-color: #a08679; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Cambria, sans-serif;">
+    <div style="width: 300px; padding: 20px; border-radius: 5px; background-color: #d8cbc4;">
+        <h1 style="text-align: center;">Register</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <div style="margin-bottom: 15px; max-width: 280px;">
+                {{ form.as_p }}
+            </div>
+            <button type="submit" style="width: 100%; padding: 10px; background-color: #f9e075; color: #080707; border: none; border-radius: 3px; cursor: pointer; font-weight: bold;">Daftar</button>
         </form>
-
-    {% if messages %}  
-        <ul>   
-            {% for message in messages %}  
-                <li>{{ message }}</li>  
-                {% endfor %}  
-        </ul>   
-    {% endif %}
-
-</div>  
+        {% if messages %}
+            <ul style="list-style-type: none; padding: 0;">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</div>
 
 {% endblock content %}

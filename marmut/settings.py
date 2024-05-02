@@ -42,9 +42,11 @@ INSTALLED_APPS = [
     'kelola_alsong',
     'main',
     'authentication',
+    'downloaded_songs',
     'kelola_playlist',
     'play_song',
     'play_user_playlist',
+    'langganan',
 ]
 
 MIDDLEWARE = [

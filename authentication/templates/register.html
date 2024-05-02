@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block meta_title %}
+    <title>Register</title>
+{% endblock meta_title %}
+
+{% block content %}  
+
+<div class="container" style="font-family: Georgia, 'Times New Roman', Times, serif;">
+    <div class="row justify-content-center">
+        <div class="col-md-6"> 
+            <div class="card" style="margin-top: 50px; background-color: #d8cbc4;">
+                <div class="card-header">
+                    <h2 class="text-center">Register</h2>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}  
+                        {{ form.as_p }} 
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary" style="background-color: #f9e075; color: black; font-weight: 500;">Register</button>
+                        </div>
+                    </form>
+                    {% if messages %}
+                        <ul class="list-group mt-3">
+                            {% for message in messages %}
+                                <li class="list-group-item">{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- background color -->
+<head>
+    <style>
+        body{background-color: #a08679;}
+        .center-text {
+        text-align: center;
+    }
+    </style>
+    </head>
+
+{% endblock content %}

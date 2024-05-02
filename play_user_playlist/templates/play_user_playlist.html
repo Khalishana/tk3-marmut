@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title text-center">USER PLAYLIST DETAIL</h3>
+            <p><strong>Judul:</strong> {{ playlist.title }}</p>
+            <p><strong>Pembuat:</strong> {{ playlist.creator.username }}</p>
+            <p><strong>Jumlah Lagu:</strong> {{ playlist.songs.count }}</p>
+            <p><strong>Total Durasi:</strong> {{ playlist.total_duration }}</p>
+            <p><strong>Tanggal Dibuat:</strong> {{ playlist.created_date|date:"d/m/Y" }}</p>
+            <p><strong>Deskripsi:</strong> {{ playlist.description }}</p>
+            
+            <div class="text-center mb-2">
+                <button class="btn btn-info btn-block" onclick="shufflePlaylist()">Shuffle Play</button>
+            </div>
+            <div class="text-center mb-2">
+                <a href="" class="btn btn-secondary btn-block">Kembali</a>
+            </div>
+            
+            <hr>
+            
+            <h4 class="text-center">DAFTAR LAGU</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Judul Lagu</th>
+                        <th>Oleh</th>
+                        <th>Durasi</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for song in playlist.songs.all %}
+                    <tr>
+                        <td>{{ song.title }}</td>
+                        <td>{{ song.artist }}</td>
+                        <td>{{ song.duration }} menit</td>
+                        <td>
+                            <div class="mb-1">
+                                <a href="" class="btn btn-primary btn-block">Lihat</a>
+                            </div>
+                            <div>
+                                <button onclick="playSong()" class="btn btn-success btn-block">Play</button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">Tidak ada lagu di playlist ini.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+function shufflePlaylist() {
+    console.log("Shuffle Play initiated.");
+    // You would ideally trigger a server action here to log the shuffle play
+}
+
+function playSong(songId) {
+    console.log("Playing song ID: " + songId);
+    // Trigger a server action here to log the play of individual song
+}
+</script>
+{% endblock %}

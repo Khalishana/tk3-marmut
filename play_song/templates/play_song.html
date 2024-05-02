@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title text-center">SONG DETAIL</h2>
+            <p><strong>Judul:</strong> Song1</p>
+            <p><strong>Genre(s):</strong></p>
+            <ul>
+                <li>Genre1</li>
+                <li>Genre2</li>
+            </ul>
+            <p><strong>Artist:</strong> Artist1</p>
+            <p><strong>Songwriter(s):</strong></p>
+            <ul>
+                <li>Songwriter1</li>
+                <li>Songwriter2</li>
+            </ul>
+            <p><strong>Durasi:</strong> 3 menit</p>
+            <p><strong>Tanggal Rilis:</strong> 18/03/24</p>
+            <p><strong>Tahun:</strong> 2024</p>
+            <p><strong>Total Play:</strong> 0</p>
+            <p><strong>Total Downloads:</strong> 0</p>
+            <p><strong>Album:</strong> Album1</p>
+
+            <div class="d-flex justify-content-center mb-3">
+                <input type="range" min="0" max="100" value="0" class="form-control-range w-75" id="songProgress">
+            </div>
+            <div class="text-center mt-4">
+                <button onclick="checkProgress()" class="btn btn-primary mb-2 w-50">Play</button>
+                <button onclick="location.href=''" class="btn btn-success mb-2 w-50">Add to Playlist</button>
+                {% if user.is_premium %}
+                    <button onclick="location.href=''" class="btn btn-info mb-2 w-50">Download</button>
+                {% endif %}
+                <button onclick="location.href=''" class="btn btn-secondary w-50">Kembali</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function checkProgress() {
+        var progress = document.getElementById("songProgress").value;
+        if (progress > 70) {
+            // Add logic to log the play if progress is more than 70%
+            console.log("Play logged for the song.");
+            // Ideally you would trigger an action here to update the server about the play
+        }
+    }
+</script>
+{% endblock %}

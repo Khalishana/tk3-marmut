@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'album_song',
     'royalti',
-    'kelola_alsong'
+    'kelola_alsong',
     'main',
     'authentication',
     'kelola_playlist',

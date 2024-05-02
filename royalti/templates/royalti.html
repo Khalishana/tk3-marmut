@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block meta%}
+    <title>Royalti</title>
+{% endblock meta%}
+
+{% block content %}
+<html lang="en">
+<head>
+    <style>
+    .tabel {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding-top: 10%; 
+    }
+
+    thead th {
+        background-color: #f2f2f2;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    thead th, tbody td {
+        padding: 15px;
+        text-align: center;
+    }
+
+    table, th, td {
+        border: 1px solid black;
+    }
+    </style>
+</head>
+
+<body>
+<div class="tabel">
+    <table>
+        <thead>
+            <tr>
+                <th colspan="5">LIST ROYALTI</th>
+            </tr>
+            <tr>
+                <th>Judul Lagu</th>
+                <th>Judul Album</th>
+                <th>Total Play</th>
+                <th>Total Download</th>
+                <th>Total Royalti Didapat</th>
+            </tr> 
+        </thead> 
+        <tbody> 
+            <tr> 
+                <td>Tampar</td> 
+                <td>Sentimental</td> 
+                <td>258,585,705</td> 
+                <td>190,324,432</td> 
+                <td>Rp 809000000</td> 
+            </tr>
+            <tr> 
+                <td>Little Things</td> 
+                <td>Take Me Home</td> 
+                <td>602,825,595</td> 
+                <td>329,821,318</td> 
+                <td>Rp 2500000000000</td> 
+            </tr>
+            <tr> 
+                <td>Over Again</td> 
+                <td>Take Me Home</td> 
+                <td>161,685,179</td> 
+                <td>87,315,122</td> 
+                <td>Rp 402000000</td> 
+            </tr>
+            <tr> 
+                <td>Bandit</td> 
+                <td>Bandit</td> 
+                <td>105,463,253</td> 
+                <td>67,543,653</td> 
+                <td>Rp 402000000</td> 
+            </tr>
+
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
+{% endblock content %}

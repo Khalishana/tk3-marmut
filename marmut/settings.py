@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'authentication',
+    'kelola_podcast',
 ]
 
 MIDDLEWARE = [

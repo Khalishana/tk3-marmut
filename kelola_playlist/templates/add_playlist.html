@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="add-playlist-container">
+        <h2>Tambah Playlist</h2>
+        <form action="#" method="post">
+            {% csrf_token %}
+            <div class="form-group row">
+                <label for="judul" class="col-sm-3 col-form-label">Judul</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="judul" name="judul">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="deskripsi" class="col-sm-3 col-form-label">Deskripsi</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="deskripsi" name="deskripsi">
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="playlist-box">
+        <h2 class="text-center">User Playlist</h2>
+        <div class="container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Judul</th>
+                        <th scope="col">Jumlah Lagu</th>
+                        <th scope="col">Total Durasi</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for playlist in playlists %}
+                    <tr>
+                        <td>{{ playlist.title }}</td>
+                        <td>{{ playlist.songs.count }}</td>
+                        <td>{{ playlist.duration }} menit</td>
+                        <td>
+                          <div class="text-center mb-2"> <a href="playlist_detail.html" class="btn btn-primary">Detail</a> </div>
+                          <div class="text-center mb-2"> <a href="#" class="btn btn-secondary">Ubah</a> </div>
+                          <div class="text-center mb-2"> <a href="#" class="btn btn-danger">Hapus</a> </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">Anda Belum Memiliki Playlist</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p class="text-center">
+            <a href="add_playlist.html" class="btn btn-success">Tambah Playlist</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

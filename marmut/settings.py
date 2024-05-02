@@ -37,6 +37,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'album_song',
+    'royalti',
+    'kelola_alsong',
+    'main',
+    'authentication',
+    'downloaded_songs',
+    'kelola_playlist',
+    'play_song',
+    'play_user_playlist',
+    'langganan',
+    'kelola_podcast',
+    'melihat_chart',
+    'play_podcast'
 ]
 
 MIDDLEWARE = [
@@ -54,7 +67,7 @@ ROOT_URLCONF = 'marmut.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

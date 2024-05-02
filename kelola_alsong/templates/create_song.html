@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block meta%}
+    <title>Create Song</title>
+{% endblock meta%}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .container {
+            justify-content: center;
+            padding-top: 5%; 
+            padding-bottom: 5%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>CREATE SONG</h2>
+        <form action="http://localhost:8000/kelola/song" method="GET"> <!-- nanti ubah jadi POST -->
+            <div class="form-group">
+                <label for="album">Album:</label>
+                <input type="text" class="form-control" id="album" value="Midnight Memories" readonly>
+            </div>
+            <div class="form-group">
+                <label for="judul">Judul:</label>
+                <input type="text" class="form-control" id="judul" placeholder="Masukkan Judul Lagu">
+            </div>
+            <div class="form-group">
+                <label for="artist">Artist:</label>
+                <select class="form-control" id="artist">
+                    <option value="">Pilih Artis</option>
+                    <option value="Ed Sheeran">Ed Sheeran</option>
+                    <option value="Taylor Swift">Taylor Swift</option>
+                    <option value="Adele">Adele</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="songwriter">Songwriter:</label>
+                <select multiple class="form-control" id="songwriter">
+                    <option value="Max Martin">Max Martin</option>
+                    <option value="Sia Furler">Sia Furler</option>
+                    <option value="Ryan Tedder">Ryan Tedder</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="genre">Genre:</label>
+                <select multiple class="form-control" id="genre">
+                    <option value="Pop">Pop</option>
+                    <option value="Rock">Rock</option>
+                    <option value="Jazz">Jazz</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="durasi">Durasi:</label>
+                <input type="text" class="form-control" id="durasi" placeholder="Masukkan Durasi Lagu">
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">SUBMIT</button>
+        </form>
+    </div>
+</body>
+</html>
+{% endblock content %}

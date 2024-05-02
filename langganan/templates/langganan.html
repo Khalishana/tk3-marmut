@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block meta_title %}
+    Marmut Page
+{% endblock meta_title %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <div style="text-align: center;">
+                <h3>Langganan Paket</h3>
+                <a href="{% url 'langganan:show_riwayat' %}">Riwayat Langganan</a>
+            </div>
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Jenis</th>
+                        <th scope="col">Harga</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1 Bulan</td>
+                        <td>Rp10.000</td>
+                        <td style="position: relative;" >
+                            <div style="position: absolute; top: 0;">
+                                <a href="{% url 'langganan:show_pembayaran' %}">Berlangganan</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3 Bulan</td>
+                        <td>Rp20.000</td>
+                        <td style="position: relative;" >
+                            <div style="position: absolute; top: 0;">
+                                <a href="#">Berlangganan</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>6 Bulan</td>
+                        <td>Rp30.000</td>
+                        <td style="position: relative;" >
+                            <div style="position: absolute; top: 0;">
+                                <a href="#">Berlangganan</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>1 Tahun</td>
+                        <td>Rp40.000</td>
+                        <td style="position: relative;" >
+                            <div style="position: absolute; top: 0;">
+                                <a href="#">Berlangganan</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+    
+{% endblock content %}

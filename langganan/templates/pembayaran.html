@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block meta_title %}
+    Marmut Page
+{% endblock meta_title %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h1 class="text-center mb-4" style="color: black;">Pembayaran Paket</h1>
+    <h4 class="text-left mb-4" style="color: black;">Informasi paket yang ingin dibeli:</h4> 
+    <div class="card">
+        <div class="card-body">
+            
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Jenis</th>
+                        <th scope="col">Harga</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1 Bulan</td>
+                        <td>Rp10.000</td>
+                    </tr>
+                    <tr>
+                        <td>3 Bulan</td>
+                        <td>Rp20.000</td>
+                    <tr>
+                        <td>6 Bulan</td>
+                        <td>Rp30.000</td>
+               
+                    </tr>
+                    <tr>
+                        <td>1 Tahun</td>
+                        <td>Rp40.000</td>
+                    </tr>
+    
+                </tbody>
+            </table>
+           
+        </div>
+    </div>
+    <h5 class="text-left mt-4 mb-2" style="color: black;">Metode Pembayaran:</h5>
+    <div class="mt-4">
+        <div class="dropdown">
+            <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                Pilih Metode Pembayaran
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" href="#">Transfer Bank</a></li>
+                <li><a class="dropdown-item" href="#">Kartu Kredit</a></li>
+                <li><a class="dropdown-item" href="#">e-Wallet</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="text-center mt-4">
+        <button type="button" class="btn btn-primary">Submit</button>
+    </div>
+</div>
+    
+{% endblock content %}

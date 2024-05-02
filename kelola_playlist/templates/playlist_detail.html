@@ -1,39 +1,54 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1> USER PLAYLIST DETAIL </h1>
-<p>Judul: {{ playlist.title }}</p>
-<p>Pembuat: {{ playlist.creator }}</p>
-<p>Jumlah Lagu: {{ playlist.songs.count }}</p>
-<p>Total Durasi: {{ playlist.duration }} menit</p>
-<p>Tanggal Dibuat: {{ playlist.date_added }} menit</p>
-<p>Deskripsi: {{ playlist.description }}</p>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1 class="mt-4 mb-4">USER PLAYLIST DETAIL</h1>
+        <div class="card mb-4">
+          <div class="card-body">
+            <p class="card-text">Judul: {{ playlist.title }}</p>
+            <p class="card-text">Pembuat: {{ playlist.creator }}</p>
+            <p class="card-text">Jumlah Lagu: {{ playlist.songs.count }}</p>
+            <p class="card-text">Total Durasi: {{ playlist.duration }} menit</p>
+            <p class="card-text">Tanggal Dibuat: {{ playlist.date_added }} menit</p>
+            <p class="card-text">Deskripsi: {{ playlist.description }}</p>
+          </div>
+        </div>
 
-<a href="#" onclick="shufflePlay(); return false;">Shuffle Play</a>
-<a href="{% url 'manage_playlists' %}">Kembali</a>
+        <a href="#" class="btn btn-primary mr-2" onclick="shufflePlay(); return false;">Shuffle Play</a>
+        <a href="manage_playlists.html" class="btn btn-secondary">Kembali</a>
 
-<h2>Daftar Lagu</h2>
-<table>
-  <tr>
-    <th>Judul Lagu</th>
-    <th>Oleh</th>
-    <th>Durasi</th>
-    <th>Actions</th>
-  </tr>
-  {% for song in playlist.songs.all %}
-  <tr>
-    <td>{{ song.title }}</td>
-    <td>{{ song.artist }}</td>
-    <td>{{ song.duration }} menit</td>
-    <td>
-      <a href="#">Lihat</a>
-      <a href="#">Play</a>
-      <a href="{% url 'delete_song' song.id %}">Hapus</a>
-    </td>
-  </tr>
-  {% endfor %}
-</table>
+        <h2 class="mt-4 mb-3">Daftar Lagu</h2>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Judul Lagu</th>
+                <th scope="col">Oleh</th>
+                <th scope="col">Durasi</th>
+                <th scope="col">Tindakan</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for song in playlist.songs.all %}
+              <tr>
+                <td>{{ song.title }}</td>
+                <td>{{ song.artist }}</td>
+                <td>{{ song.duration }} menit</td>
+                <td>
+                  <div class="text-center mb-2"> <a href="#" class="btn btn-info btn-sm mr-1">Lihat</a> </div>
+                  <div class="text-center mb-2"> <a href="#" class="btn btn-success btn-sm mr-1">Mainkan</a> </div>
+                  <div class="text-center mb-2"> <a href="#" class="btn btn-danger btn-sm">Hapus</a> </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
 
-<a href="add_song.html">Tambah Lagu</a>
-
+        <a href="add_song.html" class="btn btn-primary">Tambah Lagu</a>
+      </div>
+    </div>
+  </div>
 {% endblock %}

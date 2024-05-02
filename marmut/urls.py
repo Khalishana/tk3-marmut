@@ -19,6 +19,9 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('royalti/', include('royalti.urls')),
+    path('label/', include('album_song.urls')),
+    path('kelola/', include('kelola_alsong.urls')),
     path('', include('authentication.urls')),
     path('downloaded/', include('downloaded_songs.urls')),
     path('search/', include('downloaded_songs.urls')),
@@ -26,6 +29,6 @@ urlpatterns = [
     path('play_song', include('play_song.urls')),
     path('play_user_playlist', include('play_user_playlist.urls')),
     path('langganan/', include('langganan.urls')),
-    path('pembayaran/', include('langganan.urls')),
     path('riwayat/', include('langganan.urls')),
+    path('kelola_podcast/', include('kelola_podcast.urls')),
 ]

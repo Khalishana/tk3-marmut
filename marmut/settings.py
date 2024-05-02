@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'album_song',
-    'royalti'
+    'royalti',
+    'kelola_alsong'
 ]
 
 MIDDLEWARE = [

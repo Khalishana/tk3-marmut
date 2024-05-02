@@ -21,5 +21,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('authentication.urls')),
     path('downloaded/', include('downloaded_songs.urls')),
-    path('search/', include('downloaded_songs.urls'))
+    path('search/', include('downloaded_songs.urls')),
+    path('manage_playlist', include('kelola_playlist.urls')),
+    path('play_song', include('play_song.urls')),
+    path('play_user_playlist', include('play_user_playlist.urls')),
 ]

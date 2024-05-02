@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block meta_title %}
+    Marmut Page
+{% endblock meta_title %}
+
+{% block content %}
+<!-- Start navbar -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Marmut</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Playlist</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Podcast</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'authentication:logout' %}">Logout</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Dropdown link
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <form class="d-flex" action="{% url 'downloaded_songs:search_bar' %}" method="GET">    
+                <input class="form-control me-2" type="search" name="query" placeholder="Apa yang mau dicari" aria-label="Search">
+                <button class="btn btn btn-primary" type="submit">Cari</button>
+            </form>
+            
+        </div>
+    </div>
+  </nav>
+<!-- End navbar -->
+
+<div class="container mt-4">
+    <h1 class="text-center mb-4" style="color: black;">Pembayaran Paket</h1>
+    <h4 class="text-left mb-4" style="color: black;">Informasi paket yang ingin dibeli:</h4> 
+    <div class="card">
+        <div class="card-body">
+            
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Jenis</th>
+                        <th scope="col">Harga</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1 Bulan</td>
+                        <td>Rp10.000</td>
+                    </tr>
+                    <tr>
+                        <td>3 Bulan</td>
+                        <td>Rp20.000</td>
+                    <tr>
+                        <td>6 Bulan</td>
+                        <td>Rp30.000</td>
+               
+                    </tr>
+                    <tr>
+                        <td>1 Tahun</td>
+                        <td>Rp40.000</td>
+                    </tr>
+    
+                </tbody>
+            </table>
+           
+        </div>
+    </div>
+    <h5 class="text-left mt-4 mb-2" style="color: black;">Metode Pembayaran:</h5>
+    <div class="mt-4">
+        <div class="dropdown">
+            <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                Pilih Metode Pembayaran
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" href="#">Transfer Bank</a></li>
+                <li><a class="dropdown-item" href="#">Kartu Kredit</a></li>
+                <li><a class="dropdown-item" href="#">e-Wallet</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="text-center mt-4">
+        <button type="button" class="btn btn-primary">Submit</button>
+    </div>
+</div>
+    
+{% endblock content %}

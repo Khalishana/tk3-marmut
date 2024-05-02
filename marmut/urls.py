@@ -25,4 +25,7 @@ urlpatterns = [
     path('manage_playlist', include('kelola_playlist.urls')),
     path('play_song', include('play_song.urls')),
     path('play_user_playlist', include('play_user_playlist.urls')),
+    path('langganan/', include('langganan.urls')),
+    path('pembayaran/', include('langganan.urls')),
+    path('riwayat/', include('langganan.urls')),
 ]

@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block meta_title %}
+    Marmut Page
+{% endblock meta_title %}
+
+{% block content %}
+<!-- Start navbar -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Marmut</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Playlist</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Podcast</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'authentication:logout' %}">Logout</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Dropdown link
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <form class="d-flex" action="{% url 'downloaded_songs:search_bar' %}" method="GET">    
+                <input class="form-control me-2" type="search" name="query" placeholder="Apa yang mau dicari" aria-label="Search">
+                <button class="btn btn btn-primary" type="submit">Cari</button>
+            </form>
+            
+        </div>
+    </div>
+  </nav>
+<!-- End navbar -->
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <div style="text-align: center;">
+                <h3>Riwayat Transaksi Paket</h3>
+            </div>
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Jenis</th>
+                        <th scope="col">Tanggal Dimulai</th>
+                        <th scope="col">Tanggal Berakhir</th>
+                        <th scope="col">Metode Pembayaran</th>
+                        <th scope="col">Nominal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1 Bulan</td>
+                        <td>8 April 2024, 23.00</td>
+                        <td>8 Mei 2024, 23.00</td>
+                        <td>E-Wallet</td>
+                        <td>Rp10.000</td>
+                    </tr>
+                    <tr>
+                        <td>3 Bulan</td>
+                        <td>8 Mei 2024, 23.00</td>
+                        <td>8 Juni 2024, 23.00</td>
+                        <td>Transfer Bank</td>
+                        <td>Rp20.000</td>
+                    </tr>
+                    <tr>
+                        <td>1 Tahun</td>
+                        <td>8 April 2023, 23.00</td>
+                        <td>8 April 2024, 23.00</td>
+                        <td>Kartu Kredit</td>
+                        <td>Rp40.000</td>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="text-align: center;">
+                <a href="#">Kembali</a>
+            </div>
+        </div>
+    </div>
+    <div class="modal-body text-center" style="color: white;">
+        Berhasil menghapus Lagu dengan judul Alamat Palsu dari daftar unduhan!
+    </div>       
+    
+</div>
+    
+{% endblock content %}

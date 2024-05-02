@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block meta_title %}
+    Marmut Page
+{% endblock meta_title %}
+
+{% block content %}
+<!-- Start navbar -->
+<nav class="navbar navbar-expand-lg" style="background-color: #d8cbc4;">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Marmut</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Playlist</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Podcast</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'authentication:logout' %}">Logout</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Dropdown link
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <form class="d-flex" action="{% url 'downloaded_songs:search_bar' %}" method="GET">    
+                <input class="form-control me-2" type="search" name="query" placeholder="Apa yang mau dicari" aria-label="Search">
+                <button class="btn btn btn-outline-light" type="submit">Cari</button>
+            </form>
+            
+        </div>
+    </div>
+  </nav>
+<!-- End navbar -->
+
+
+<head>
+    <style>
+        .custom-table {
+            background-color: pink;
+        }
+    </style>
+</head>
+
+
+<div class="container mt-4">
+    <h1 class="text-center mb-4" style="color: whitesmoke;">Downloaded Songs Page</h1>
+    <div class="card">
+        <div class="card-body">
+            <div style="text-align: center;">
+                <h3>Judul Lagu</h3>
+            </div>
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Judul</th>
+                        <th scope="col">Oleh</th>
+                        <th scope="col">Tanggal download</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Right Where You Left Me</td>
+                        <td>Taylor Swift</td>
+                        <td>01/01/2024</td>
+                        <td style="position: relative;">
+                            <div style="position: absolute; top: 0;">
+                                <a href="#">Lihat</a>
+                            </div>
+                            <div style="position: absolute; bottom: 0;">
+                                <a href="#">Hapus</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Cikini ke Gondangdia</td>
+                        <td>Duo Anggrek</td>
+                        <td>04/04/2024</td>
+                        <td style="position: relative;" >
+                            <div style="position: absolute; top: 0;">
+                                <a href="#">Lihat</a>
+                            </div>
+                            <div style="position: absolute; bottom: 0;">
+                                <a href="#">Hapus</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Ku Tunggu Kau Putus</td>
+                        <td>Sheryl Sheinafia</td>
+                        <td>05/05/2024</td>
+                        <td style="position: relative;" >
+                            <div style="position: absolute; top: 0;">
+                                <a href="#">Lihat</a>
+                            </div>
+                            <div style="position: absolute; bottom: 0;">
+                                <a href="#">Hapus</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>What Was I Made For</td>
+                        <td>Billie Elish</td>
+                        <td>02/02/2024</td>
+                        <td style="position: relative;" >
+                            <div style="position: absolute; top: 0;">
+                                <a href="#">Lihat</a>
+                            </div>
+                            <div style="position: absolute; bottom: 0;">
+                                <a href="#">Hapus</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- Tambahkan baris baru untuk setiap lagu yang ingin Anda tampilkan -->
+                </tbody>
+            </table>
+            <div style="text-align: center;">
+                <a href="#">Kembali</a>
+            </div>
+        </div>
+    </div>
+    <div class="modal-body text-center" style="color: white;">
+        Berhasil menghapus Lagu dengan judul Alamat Palsu dari daftar unduhan!
+    </div>    
+    <div class="modal-footer d-flex justify-content-center">
+        <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Kembali</button>
+    </div>    
+    
+</div>
+    
+    <!-- background color -->
+    <head>
+        <style>
+            body{background-color: #a08679;}
+            .center-text {
+            text-align: center;
+        }
+        </style>
+        </head>
+    </div>
+    
+{% endblock content %}

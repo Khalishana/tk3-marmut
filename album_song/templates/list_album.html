@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block meta%}
+    <title>One Direction</title>
+{% endblock meta%}
+
+{% block content %}
+<html lang="en">
+<head>
+    <style>
+    .tabel {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding-top: 10%; 
+        padding-bottom: 10%;
+    }
+
+    thead th {
+        background-color: #f2f2f2;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    thead th, tbody td {
+        padding: 15px;
+        text-align: center;
+    }
+
+    table, th, td {
+        border: 1px solid black;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="tabel">
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="4">LIST ALBUM</th>
+                </tr>
+                <tr>
+                    <th>Judul</th>
+                    <th>Jumlah Lagu</th>
+                    <th>Total Durasi</th>
+                    <th>Action</th>
+                </tr> 
+            </thead> 
+            <tbody> 
+                <tr> 
+                    <td>Up All Night</td> 
+                    <td>13</td> 
+                    <td>45:12</td> 
+                    <td>
+                        <a href="http://localhost:8000/label/song" class="btn btn-primary me-3">
+                            Lihat
+                        </a>
+                        <button class="btn btn-danger">
+                            Hapus
+                        </button>
+                    </td>
+                </tr>
+                <tr> 
+                    <td>Take Me Home</td> 
+                    <td>13</td> 
+                    <td>39:50</td> 
+                    <td>
+                        <a href="http://localhost:8000/label/song" class="btn btn-primary me-3">
+                            Lihat
+                        </a>
+                        <button class="btn btn-danger">
+                            Hapus
+                        </button>
+                    </td>
+                </tr>
+                <tr> 
+                    <td>Midnight Memories</td> 
+                    <td>14</td> 
+                    <td>49:56</td> 
+                    <td>
+                        <a href="http://localhost:8000/label/song" class="btn btn-primary me-3">
+                            Lihat
+                        </a>
+                        <button class="btn btn-danger">
+                            Hapus
+                        </button>
+                    </td>
+                </tr>
+                <tr> 
+                    <td>Four</td> 
+                    <td>16</td> 
+                    <td>58:23</td> 
+                    <td>
+                        <a href="http://localhost:8000/label/song" class="btn btn-primary me-3">
+                            Lihat
+                        </a>
+                        <button class="btn btn-danger">
+                            Hapus
+                        </button>
+                    </td>
+                </tr>
+                <tr> 
+                    <td>Made in the A.M.</td> 
+                    <td>13</td> 
+                    <td>46:36</td> 
+                    <td>
+                        <a href="http://localhost:8000/label/song" class="btn btn-primary me-3">
+                            Lihat
+                        </a>
+                        <button class="btn btn-danger">
+                            Hapus
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
+{% endblock content %}

@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'authentication',
-    'hijau',
+    'kelola_playlist',
+    'play_song',
+    'play_user_playlist',
 ]
 
 MIDDLEWARE = [

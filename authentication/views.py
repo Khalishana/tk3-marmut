@@ -71,7 +71,6 @@ def register_user(request):
         conn.close()
 
         response = HttpResponse("User registered successfully")
-        response.set_cookie('user_roles', ','.join(user_roles), max_age=365*24*60*60)  # 1 year
         return response
     
     return render(request, 'login.html', {'show_form': 'registerOptions'})
@@ -126,12 +125,24 @@ def login(request):
 
         conn = get_db_connection()
         cur = conn.cursor()
+        
         cur.execute("SELECT password FROM marmut.akun WHERE email = %s", (username,))
         user = cur.fetchone()
+        
         if user is None:
-            cur.close()
-            conn.close()
-            return HttpResponse("Invalid login credentials")
+            cur.execute("SELECT password FROM marmut.label WHERE email = %s", (username,))
+            label = cur.fetchone()
+            
+            if label is None:
+                cur.close()
+                conn.close()
+                return HttpResponse("Invalid login credentials")
+            else:
+                response = redirect('authentication:show_landing')
+                response.set_cookie('email', username) 
+                return response
+            
+        
         if user[0] == password:
             response = redirect('authentication:show_landing')
             user_roles = []
@@ -152,7 +163,8 @@ def login(request):
             # Set cookies for roles
             response.set_cookie('user_id', str(uuid.uuid4()), max_age=365*24*60*60)  # 1 year
             response.set_cookie('user_roles', ','.join(user_roles), max_age=365*24*60*60)  # 1 year
-
+            response.set_cookie('email', username) 
+            
             cur.close()
             conn.close()
             return response
@@ -160,6 +172,8 @@ def login(request):
             cur.close()
             conn.close()
             return HttpResponse("Invalid login credentials")
+        
+        
 
     return render(request, 'login.html')
 

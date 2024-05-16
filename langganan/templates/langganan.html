@@ -5,8 +5,14 @@
 {% endblock meta_title %}
 
 {% block content %}
-
 <div class="container mt-4">
+    <!-- {% if messages %}
+        <div>
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %} -->
     <div class="card">
         <div class="card-body">
             <div style="text-align: center;">
@@ -26,17 +32,28 @@
                     <tr>
                         <td>{{ paket.0 }}</td>
                         <td>{{ paket.1 }}</td>
-                        <td style="position: relative;" >
+                        <td style="position: relative;">
                             <div style="position: absolute; top: 0;">
-                                <a href="#">Berlangganan</a>
+                                <form method="post" action="{% url 'langganan:show_pembayaran' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="jenis_paket" value="{{ paket.0 }}">
+                                    <input type="hidden" name="harga_paket" value="{{ paket.1 }}">
+                                    <button type="submit" class="btn btn-outline-primary btn-sm">Berlangganan</button>
+                                </form>
                             </div>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            {% if messages %}
+                <div class="mt-4">
+                    {% for message in messages %}
+                        <div class="alert {{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
-    
 {% endblock content %}

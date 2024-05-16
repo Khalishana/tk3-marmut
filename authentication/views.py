@@ -42,6 +42,10 @@ def register_user(request):
 
         if user_count > 0 or label_count > 0 or nonpremium_count > 0:
             return HttpResponse("Email already registered as user or label")
+            # return render(request, 'login.html', {
+            #     'error_message': "Email already registered as user or label",
+            #     'show_form': 'userForm'
+            # })
         
         print(password)
 
@@ -62,8 +66,12 @@ def register_user(request):
         conn.close()
 
         return HttpResponse("User registered successfully")
-
-    return render(request, 'login.html')
+        # return render(request, 'login.html', {
+        #     'success_message': "User registered successfully",
+        #     'show_form': 'userForm'
+        # })
+    
+    return render(request, 'login.html', {'show_form': 'registerOptions'})
 
 def register_label(request):
     if request.method == 'POST':
@@ -86,7 +94,11 @@ def register_label(request):
 
         if user_count > 0 or label_count > 0 or nonpremium_count > 0:
             return HttpResponse("Email already registered as user or label")
-
+            # return render(request, 'login.html', {
+            #     'error_message': "Email already registered as user or label",
+            #     'show_form': 'labelForm'
+            # })
+        
         # Masukkan data ke tabel label
         cur.execute("""
             INSERT INTO marmut.label (id, nama, email, password, kontak, id_pemilik_hak_cipta)
@@ -97,7 +109,11 @@ def register_label(request):
         conn.close()
 
         return HttpResponse("Label registered successfully")
-
+        # return render(request, 'login.html', {
+        #     'success_message': "Label registered successfully",
+        #     'show_form': 'labelForm'
+        # })
+    
     return render(request, 'login.html')
 
 def login(request):

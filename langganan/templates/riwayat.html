@@ -6,6 +6,13 @@
 
 {% block content %}
 <div class="container mt-4">
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
     <div class="card">
         <div class="card-body">
             <div style="text-align: center;">
@@ -22,6 +29,7 @@
                         <th scope="col">Nominal</th>
                     </tr>
                 </thead>
+                <tbody>
                     {% for transaction in transactions %}
                     <tr>
                         <td>{{ transaction.0 }}</td>
@@ -30,9 +38,9 @@
                         <td>{{ transaction.3 }}</td>
                         <td>{{ transaction.4 }}</td>
                         <td>{{ transaction.5 }}</td>
-                        <td>{{ transaction.6 }}</td>
                     </tr>
                     {% endfor %}
+                </tbody>
             </table>
             <div style="text-align: center;">
                 <a href="{% url 'langganan:show_paket_langganan' %}">Kembali</a>

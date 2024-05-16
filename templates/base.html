@@ -19,54 +19,42 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Dashboard</a>
-                        </li>
-                        {% if user.is_regular_user or user.is_artist or user.is_songwriter or user.is_podcaster %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Chart</a>
-                            </li>
-                            <li class="nav-item">
-                                <form class="d-flex">    
-                                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                                    <button class="btn btn-outline-light" type="submit">Search</button>
-                                </form>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Kelola Playlist</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Langganan Paket</a>
-                            </li>
-                        {% endif %}
-                        {% if user.is_premium %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Kelola Downloaded Songs</a>
-                            </li>
-                        {% endif %}
-                        {% if user.is_podcaster %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Kelola Podcast</a>
-                            </li>
-                        {% endif %}
-                        {% if user.is_artist or user.is_songwriter %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Kelola Album & Songs</a>
-                            </li>
-                        {% endif %}
-                        {% if user.is_label %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Kelola Album</a>
-                            </li>
-                        {% endif %}
-                        {% if user.is_artist or user.is_songwriter or user.is_label %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Cek Royalti</a>
-                            </li>
-                        {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Logout</a>
-                        </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Dashboard</a>
+                    </li>
+                    <li class="nav-item" data-role="regular_user,artist,songwriter,podcaster">
+                        <a class="nav-link" href="#">Chart</a>
+                    </li>
+                    <li class="nav-item" data-role="regular_user,artist,songwriter,podcaster">
+                        <form class="d-flex">    
+                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-light" type="submit">Search</button>
+                        </form>
+                    </li>
+                    <li class="nav-item" data-role="regular_user,artist,songwriter,podcaster">
+                        <a class="nav-link" href="#">Kelola Playlist</a>
+                    </li>
+                    <li class="nav-item" data-role="regular_user,artist,songwriter,podcaster">
+                        <a class="nav-link" href="#">Langganan Paket</a>
+                    </li>
+                    <li class="nav-item" data-role="premium">
+                        <a class="nav-link" href="#">Kelola Downloaded Songs</a>
+                    </li>
+                    <li class="nav-item" data-role="podcaster">
+                        <a class="nav-link" href="#">Kelola Podcast</a>
+                    </li>
+                    <li class="nav-item" data-role="artist,songwriter">
+                        <a class="nav-link" href="#">Kelola Album & Songs</a>
+                    </li>
+                    <li class="nav-item" data-role="label">
+                        <a class="nav-link" href="#">Kelola Album</a>
+                    </li>
+                    <li class="nav-item" data-role="artist,songwriter,label">
+                        <a class="nav-link" href="#">Cek Royalti</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'authentication:logout' %}">Logout</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -74,4 +62,18 @@
     {% block content %}
     {% endblock content %}
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const userRoles = "{{ request.COOKIES.user_roles }}".split(',');
+        const elements = document.querySelectorAll('[data-role]');
+        elements.forEach(element => {
+            const roles = element.getAttribute('data-role').split(',');
+            if (roles.some(role => userRoles.includes(role))) {
+                element.style.display = 'block';
+            } else {
+                element.style.display = 'none';
+            }
+        });
+    });
+</script>
 </html>

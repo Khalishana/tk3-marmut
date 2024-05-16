@@ -46,11 +46,11 @@ def register_user(request):
         cur = conn.cursor()
 
         # Cek apakah email sudah terdaftar di tabel akun, label, atau nonpremium
-        cur.execute("SELECT COUNT(*) FROM marmut.akun WHERE email = %s", (email,))
+        cur.execute("SELECT COUNT(*) FROM akun WHERE email = %s", (email,))
         user_count = cur.fetchone()[0]
-        cur.execute("SELECT COUNT(*) FROM marmut.label WHERE email = %s", (email,))
+        cur.execute("SELECT COUNT(*) FROM label WHERE email = %s", (email,))
         label_count = cur.fetchone()[0]
-        cur.execute("SELECT COUNT(*) FROM marmut.nonpremium WHERE email = %s", (email,))
+        cur.execute("SELECT COUNT(*) FROM nonpremium WHERE email = %s", (email,))
         nonpremium_count = cur.fetchone()[0]
 
         if user_count > 0 or label_count > 0 or nonpremium_count > 0:
@@ -58,7 +58,7 @@ def register_user(request):
 
         # Masukkan data ke tabel akun
         cur.execute("""
-            INSERT INTO marmut.akun (email, password, nama, gender, tempat_lahir, tanggal_lahir, is_verified, kota_asal)
+            INSERT INTO akun (email, password, nama, gender, tempat_lahir, tanggal_lahir, is_verified, kota_asal)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """, (email, password, name, gender, birth_place, birth_date, is_verified, hometown))
 
@@ -94,11 +94,11 @@ def register_label(request):
         cur = conn.cursor()
 
         # Cek apakah email sudah terdaftar di tabel akun, label, atau nonpremium
-        cur.execute("SELECT COUNT(*) FROM marmut.akun WHERE email = %s", (email,))
+        cur.execute("SELECT COUNT(*) FROM akun WHERE email = %s", (email,))
         user_count = cur.fetchone()[0]
-        cur.execute("SELECT COUNT(*) FROM marmut.label WHERE email = %s", (email,))
+        cur.execute("SELECT COUNT(*) FROM label WHERE email = %s", (email,))
         label_count = cur.fetchone()[0]
-        cur.execute("SELECT COUNT(*) FROM marmut.nonpremium WHERE email = %s", (email,))
+        cur.execute("SELECT COUNT(*) FROM nonpremium WHERE email = %s", (email,))
         nonpremium_count = cur.fetchone()[0]
 
         if user_count > 0 or label_count > 0 or nonpremium_count > 0:
@@ -109,8 +109,8 @@ def register_label(request):
             # })
 
         # Masukkin data ke tabel label
-        cur.execute("INSERT INTO marmut.pemilik_hak_cipta (id, rate_royalti) VALUES (%s, %s)", (id_pemilik_hak_cipta, rate_royalti))
-        cur.execute("INSERT INTO marmut.label (id, nama, email, password, kontak, id_pemilik_hak_cipta) VALUES (%s, %s, %s, %s, %s, %s)", (str(uuid.uuid4()), name, email, password, contact, id_pemilik_hak_cipta))
+        cur.execute("INSERT INTO pemilik_hak_cipta (id, rate_royalti) VALUES (%s, %s)", (id_pemilik_hak_cipta, rate_royalti))
+        cur.execute("INSERT INTO label (id, nama, email, password, kontak, id_pemilik_hak_cipta) VALUES (%s, %s, %s, %s, %s, %s)", (str(uuid.uuid4()), name, email, password, contact, id_pemilik_hak_cipta))
         
         conn.commit()
         cur.close()
@@ -132,14 +132,14 @@ def login(request):
         conn = get_db_connection()
         cur = conn.cursor()
         
-        cur.execute("SELECT password FROM marmut.akun WHERE email = %s", (username,))
+        cur.execute("SELECT password FROM akun WHERE email = %s", (username,))
         user = cur.fetchone()
         
         if user is None:
-            cur.execute("SELECT password FROM marmut.label WHERE email = %s", (username,))
+            cur.execute("SELECT password FROM label WHERE email = %s", (username,))
             label = cur.fetchone()
             
-            if label is None:
+            if label is None or label[0] != password:
                 cur.close()
                 conn.close()
                 return HttpResponse("Invalid login credentials")
@@ -159,15 +159,15 @@ def login(request):
             user_roles = []
 
             # Check roles
-            cur.execute("SELECT COUNT(*) FROM marmut.songwriter WHERE email_akun = %s", (username,))
+            cur.execute("SELECT COUNT(*) FROM songwriter WHERE email_akun = %s", (username,))
             if cur.fetchone()[0] > 0:
                 user_roles.append('songwriter')
 
-            cur.execute("SELECT COUNT(*) FROM marmut.artist WHERE email_akun = %s", (username,))
+            cur.execute("SELECT COUNT(*) FROM artist WHERE email_akun = %s", (username,))
             if cur.fetchone()[0] > 0:
                 user_roles.append('artist')
 
-            cur.execute("SELECT COUNT(*) FROM marmut.podcaster WHERE email = %s", (username,))
+            cur.execute("SELECT COUNT(*) FROM podcaster WHERE email = %s", (username,))
             if cur.fetchone()[0] > 0:
                 user_roles.append('podcaster')
 

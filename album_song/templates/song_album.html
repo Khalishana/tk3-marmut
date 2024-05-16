@@ -51,20 +51,22 @@
             </tr> 
         </thead> 
         <tbody> 
+            {% for song in showed_song %}
             <tr>
-                <td>Live While We're Young</td>
-                <td>3:20</td>
-                <td>432,726,394</td>
-                <td>238,628,790</td>
+                <td>{{song.3}}</td>
+                <td>{{song.6}}</td>
+                <td>{{song.1}}</td>
+                <td>{{song.2}}</td>
                 <td>
                     <button class="btn btn-primary me-3">
                         Lihat Detail
                     </button>
-                    <a href="{% url 'http://localhost:8000/label/delete_song' %}?album_id={{ song.0 }}" class="btn btn-danger">
+                    <a href="{% url 'album_song:delete_song' %}?song_id={{ song.0 }}" class="btn btn-danger">
                         Hapus
                     </a>
                 </td>
             </tr>
+            {% endfor %}
         </tbody>
     </table>
 </div>

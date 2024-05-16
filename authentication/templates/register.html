@@ -26,14 +26,15 @@
         <div id="loginForm" style="display: none;" class="card">
             <div class="card-body">
                 <h4 class="card-title">Login</h4>
-                <form>
+                <form action="{% url 'authentication:login' %}" method="post">
+                    {% csrf_token %}
                     <div class="form-group">
                         <label>Email:</label>
-                        <input type="email" class="form-control">
+                        <input type="email" name="username" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label>Password:</label>
-                        <input type="password" class="form-control">
+                        <input type="password" name="password" class="form-control" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Log In</button>
                 </form>
@@ -53,44 +54,45 @@
         <div id="userForm" style="display: none;" class="card">
             <div class="card-body">
                 <h4 class="card-title">Form Registrasi Pengguna</h4>
-                <form>
+                <form action="{% url 'authentication:register_user' %}" method="post">
+                    {% csrf_token %}
                     <div class="form-group">
                         <label>Email:</label>
-                        <input type="email" class="form-control" required>
+                        <input type="email" name="email" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label>Password:</label>
-                        <input type="password" class="form-control" required>
+                        <input type="password" name="password" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label>Nama:</label>
-                        <input type="text" class="form-control" required>
+                        <input type="text" name="name" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label>Gender:</label>
-                        <select class="form-control" required>
-                            <option>Laki-laki</option>
-                            <option>Perempuan</option>
+                        <select class="form-control" name="gender" required>
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Tempat lahir:</label>
-                        <input type="text" class="form-control" required>
+                        <input type="text" name="birth_place" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label>Tanggal lahir:</label>
-                        <input type="date" class="form-control" required>
+                        <input type="date" name="birth_date" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label>Kota asal:</label>
-                        <input type="text" class="form-control" required>
+                        <input type="text" name="hometown" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label>Role:</label>
                         <div>
-                            <input type="checkbox" id="podcaster"> Podcaster
-                            <input type="checkbox" id="artist"> Artist
-                            <input type="checkbox" id="songwriter"> Songwriter
+                            <input type="checkbox" name="role_podcaster"> Podcaster
+                            <input type="checkbox" name="role_artist"> Artist
+                            <input type="checkbox" name="role_songwriter"> Songwriter
                         </div>
                     </div>
                     <button type="submit" class="btn btn-success">Register</button>
@@ -102,22 +104,23 @@
         <div id="labelForm" style="display: none;" class="card">
             <div class="card-body">
                 <h4 class="card-title">Form Registrasi Label</h4>
-                <form>
+                <form action="{% url 'authentication:register_label' %}" method="post">
+                    {% csrf_token %}
                     <div class="form-group">
                         <label>Email:</label>
-                        <input type="email" class="form-control" required>
+                        <input type="email" name="email" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label>Password:</label>
-                        <input type="password" class="form-control" required>
+                        <input type="password" name="password" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label>Nama:</label>
-                        <input type="text" class="form-control" required>
+                        <input type="text" name="name" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label>Kontak:</label>
-                        <input type="text" class="form-control" required>
+                        <input type="text" name="contact" class="form-control" required>
                     </div>
                     <button type="submit" class="btn btn-success">Register</button>
                 </form>

@@ -1,6 +1,7 @@
 import psycopg2
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 import uuid
 
 def get_db_connection():
@@ -16,7 +17,7 @@ def get_db_connection():
 def register_user(request):
     if request.method == 'POST':
         email = request.POST['email']
-        password = (request.POST['password'])
+        password = request.POST['password']
         name = request.POST['name']
         gender = request.POST['gender']
         birth_place = request.POST['birth_place']
@@ -25,6 +26,14 @@ def register_user(request):
         role_podcaster = 'role_podcaster' in request.POST
         role_artist = 'role_artist' in request.POST
         role_songwriter = 'role_songwriter' in request.POST
+
+        user_roles = []
+        if role_podcaster:
+            user_roles.append('podcaster')
+        if role_artist:
+            user_roles.append('artist')
+        if role_songwriter:
+            user_roles.append('songwriter')
 
         # Tentukan status verifikasi berdasarkan role yang dipilih
         is_verified = role_podcaster or role_artist or role_songwriter
@@ -41,9 +50,7 @@ def register_user(request):
         nonpremium_count = cur.fetchone()[0]
 
         if user_count > 0 or label_count > 0 or nonpremium_count > 0:
-            return HttpResponse("Email already registered as user or label")
-        
-        print(password)
+            return HttpResponse("Email sudah terdaftar sebagai pengguna atau label")
 
         # Masukkan data ke tabel akun
         cur.execute("""
@@ -51,19 +58,23 @@ def register_user(request):
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """, (email, password, name, gender, birth_place, birth_date, is_verified, hometown))
 
-        # Secara otomatis menetapkan Pengguna memiliki akun Non-Premium
-        cur.execute("""
-            INSERT INTO marmut.nonpremium (email)
-            VALUES (%s)
-        """, (email,))
+        # Tambahkan ke tabel role jika role dipilih
+        if role_podcaster:
+            cur.execute("INSERT INTO marmut.podcaster (email) VALUES (%s)", (email,))
+        if role_artist:
+            cur.execute("INSERT INTO marmut.artist (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", (uuid.uuid4(), email, uuid.uuid4()))
+        if role_songwriter:
+            cur.execute("INSERT INTO marmut.songwriter (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", (uuid.uuid4(), email, uuid.uuid4()))
 
         conn.commit()
         cur.close()
         conn.close()
 
-        return HttpResponse("User registered successfully")
-
-    return render(request, 'login.html')
+        response = HttpResponse("User registered successfully")
+        response.set_cookie('user_roles', ','.join(user_roles), max_age=365*24*60*60)  # 1 year
+        return response
+    
+    return render(request, 'login.html', {'show_form': 'registerOptions'})
 
 def register_label(request):
     if request.method == 'POST':
@@ -71,7 +82,7 @@ def register_label(request):
         password = (request.POST['password'])
         name = request.POST['name']
         contact = request.POST['contact']
-        id_pemilik_hak_cipta = "default_id"  # Atur default atau nilai sebenarnya jika ada
+        id_pemilik_hak_cipta = "default_id"  
 
         conn = get_db_connection()
         cur = conn.cursor()
@@ -86,8 +97,12 @@ def register_label(request):
 
         if user_count > 0 or label_count > 0 or nonpremium_count > 0:
             return HttpResponse("Email already registered as user or label")
+            # return render(request, 'login.html', {
+            #     'error_message': "Email already registered as user or label",
+            #     'show_form': 'labelForm'
+            # })
 
-        # Masukkan data ke tabel label
+        # Masukkin data ke tabel label
         cur.execute("""
             INSERT INTO marmut.label (id, nama, email, password, kontak, id_pemilik_hak_cipta)
             VALUES (%s, %s, %s, %s, %s)
@@ -97,6 +112,10 @@ def register_label(request):
         conn.close()
 
         return HttpResponse("Label registered successfully")
+        # return render(request, 'login.html', {
+        #     'success_message': "Label registered successfully",
+        #     'show_form': 'labelForm'
+        # })
 
     return render(request, 'login.html')
 
@@ -109,20 +128,47 @@ def login(request):
         cur = conn.cursor()
         cur.execute("SELECT password FROM marmut.akun WHERE email = %s", (username,))
         user = cur.fetchone()
-        cur.close()
-        conn.close()
         if user is None:
+            cur.close()
+            conn.close()
             return HttpResponse("Invalid login credentials")
         if user[0] == password:
-            return redirect('authentication:show_landing')
+            response = redirect('authentication:show_landing')
+            user_roles = []
+
+            # Check roles
+            cur.execute("SELECT COUNT(*) FROM marmut.songwriter WHERE email_akun = %s", (username,))
+            if cur.fetchone()[0] > 0:
+                user_roles.append('songwriter')
+
+            cur.execute("SELECT COUNT(*) FROM marmut.artist WHERE email_akun = %s", (username,))
+            if cur.fetchone()[0] > 0:
+                user_roles.append('artist')
+
+            cur.execute("SELECT COUNT(*) FROM marmut.podcaster WHERE email = %s", (username,))
+            if cur.fetchone()[0] > 0:
+                user_roles.append('podcaster')
+
+            # Set cookies for roles
+            response.set_cookie('user_id', str(uuid.uuid4()), max_age=365*24*60*60)  # 1 year
+            response.set_cookie('user_roles', ','.join(user_roles), max_age=365*24*60*60)  # 1 year
+
+            cur.close()
+            conn.close()
+            return response
         else:
+            cur.close()
+            conn.close()
             return HttpResponse("Invalid login credentials")
 
     return render(request, 'login.html')
 
 def show_landing(request):
-    return render(request, 'landing_page.html', {'user': request.user})
+    user_id = request.COOKIES.get('user_id')
+    return render(request, 'landing_page.html', {'user_id': user_id})
 
 def logout_view(request):
-    # tambahkan logika logout sesuai kebutuhan
-    return redirect('authentication:login')
+    response = HttpResponseRedirect(reverse('authentication:login'))
+    for cookie in request.COOKIES:
+        response.delete_cookie(cookie)
+    return response

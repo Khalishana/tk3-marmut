@@ -145,7 +145,12 @@ def login(request):
                 return HttpResponse("Invalid login credentials")
             else:
                 response = redirect('authentication:show_landing')
-                response.set_cookie('email', username) 
+                user_roles = ['label']  
+                response.set_cookie('email', username)
+                response.set_cookie('user_id', str(uuid.uuid4()), max_age=365*24*60*60)  # 1 year
+                response.set_cookie('user_roles', ','.join(user_roles), max_age=365*24*60*60)  # 1 year
+                cur.close()
+                conn.close()
                 return response
             
         
@@ -165,6 +170,9 @@ def login(request):
             cur.execute("SELECT COUNT(*) FROM podcaster WHERE email = %s", (username,))
             if cur.fetchone()[0] > 0:
                 user_roles.append('podcaster')
+
+            if not user_roles:  
+                user_roles.append('regular_user')
 
             # Set cookies for roles
             response.set_cookie('user_id', str(uuid.uuid4()), max_age=365*24*60*60)  # 1 year

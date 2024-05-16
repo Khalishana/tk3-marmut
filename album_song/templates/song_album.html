@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block meta%}
-    <title>Take Me Home</title>
+    <title>{{ album_name }}</title>
 {% endblock meta%}
 
 {% block content %}
@@ -40,7 +40,7 @@
     <table>
         <thead>
             <tr>
-                <th colspan="5">DAFTAR LAGU PADA ALBUM TAKE ME HOME</th>
+                <th colspan="5">DAFTAR LAGU PADA ALBUM {{ album_name }}</th>
             </tr>
             <tr>
                 <th>Judul</th>
@@ -60,177 +60,9 @@
                     <button class="btn btn-primary me-3">
                         Lihat Detail
                     </button>
-                    <button class="btn btn-danger">
+                    <a href="{% url 'http://localhost:8000/label/delete_song' %}?album_id={{ song.0 }}" class="btn btn-danger">
                         Hapus
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <td>Kiss You</td>
-                <td>3:04</td>
-                <td>298,294,495</td>
-                <td>185,937,620</td>
-                <td>
-                    <button class="btn btn-primary me-3">
-                        Lihat Detail
-                    </button>
-                    <button class="btn btn-danger">
-                        Hapus
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <td>Little Things</td>
-                <td>3:39</td>
-                <td>602,825,595</td>
-                <td>329,821,318</td>
-                <td>
-                    <button class="btn btn-primary me-3">
-                        Lihat Detail
-                    </button>
-                    <button class="btn btn-danger">
-                        Hapus
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <td>C'mon, C'mon</td>
-                <td>2:45</td>
-                <td>140,226,556</td>
-                <td>90,812,667</td>
-                <td>
-                    <button class="btn btn-primary me-3">
-                        Lihat Detail
-                    </button>
-                    <button class="btn btn-danger">
-                        Hapus
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <td>Last First Kiss</td>
-                <td>3:23</td>
-                <td>114,174,759</td>
-                <td>64,446,440</td>
-                <td>
-                    <button class="btn btn-primary me-3">
-                        Lihat Detail
-                    </button>
-                    <button class="btn btn-danger">
-                        Hapus
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <td>Heart Attack</td>
-                <td>2:56</td>
-                <td>108,239,688</td>
-                <td>59,887,943</td>
-                <td>
-                    <button class="btn btn-primary me-3">
-                        Lihat Detail
-                    </button>
-                    <button class="btn btn-danger">
-                        Hapus
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <td>Rock Me</td>
-                <td>3:20</td>
-                <td>125,269,929</td>
-                <td>70,487,426</td>
-                <td>
-                    <button class="btn btn-primary me-3">
-                        Lihat Detail
-                    </button>
-                    <button class="btn btn-danger">
-                        Hapus
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <td>Change My Mind</td>
-                <td>3:33</td>
-                <td>102,126,908</td>
-                <td>55,167,000</td>
-                <td>
-                    <button class="btn btn-primary me-3">
-                        Lihat Detail
-                    </button>
-                    <button class="btn btn-danger">
-                        Hapus
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <td>I Would</td>
-                <td>3:22</td>
-                <td>107,371,864</td>
-                <td>59,134,479</td>
-                <td>
-                    <button class="btn btn-primary me-3">
-                        Lihat Detail
-                    </button>
-                    <button class="btn btn-danger">
-                        Hapus
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <td>Over Again</td>
-                <td>3:02</td>
-                <td>161,685,179</td>
-                <td>87,315,122</td>
-                <td>
-                    <button class="btn btn-primary me-3">
-                        Lihat Detail
-                    </button>
-                    <button class="btn btn-danger">
-                        Hapus
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <td>Back for You</td>
-                <td>3:00</td>
-                <td>100,454,973</td>
-                <td>55,899,493</td>
-                <td>
-                    <button class="btn btn-primary me-3">
-                        Lihat Detail
-                    </button>
-                    <button class="btn btn-danger">
-                        Hapus
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <td>They Don't Know About Us</td>
-                <td>3:20</td>
-                <td>95,937,041</td>
-                <td>53,719,271</td>
-                <td>
-                    <button class="btn btn-primary me-3">
-                        Lihat Detail
-                    </button>
-                    <button class="btn btn-danger">
-                        Hapus
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <td>Summer Love</td>
-                <td>3:28</td>
-                <td>85,378,902</td>
-                <td>47,686,762</td>
-                <td>
-                    <button class="btn btn-primary me-3">
-                        Lihat Detail
-                    </button>
-                    <button class="btn btn-danger">
-                        Hapus
-                    </button>
+                    </a>
                 </td>
             </tr>
         </tbody>

@@ -38,17 +38,11 @@ def show_album(request):
             'showed_album': showed_album,
         }
         
-        response = render(request, 'list_album.html', context)
-        response.set_cookie('role', 'label')
-        response.set_cookie('email', email)
-        response.set_cookie('id', label[0][0])
-        response.set_cookie('idPemilikCiptaLabel', label[0][5])
-        
         conn.commit()
         cur.close()
         conn.close()
         
-        return response
+        return render(request, 'list_album.html', context)
     
     return render(request, 'list_album.html')
 
@@ -81,11 +75,10 @@ def show_song(request):
         'album_name': album_name, 
     }
     
-    response = render(request, 'song_album.html', context)
     conn.commit()
     cur.close()
     conn.close()
-    return response
+    return render(request, 'song_album.html', context)
 
 def delete_album(request):
     album_id = request.GET.get('album_id')
@@ -107,9 +100,8 @@ def delete_song(request):
     
     conn = get_db_connection()
     cur = conn.cursor()
-
     
-    # cur.execute("DELETE FROM konten WHERE id = %s", (song_id,))
+    cur.execute("DELETE FROM konten WHERE id = %s", (song_id,))
     
     conn.commit()
     cur.close()

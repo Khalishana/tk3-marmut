@@ -1,3 +1,4 @@
+import random
 import psycopg2
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
@@ -26,6 +27,8 @@ def register_user(request):
         role_podcaster = 'role_podcaster' in request.POST
         role_artist = 'role_artist' in request.POST
         role_songwriter = 'role_songwriter' in request.POST
+        id_pemilik_hak_cipta = str(uuid.uuid4())
+        rate_royalti = random.randint(4,9)
 
         user_roles = []
         if role_podcaster:
@@ -62,9 +65,15 @@ def register_user(request):
         if role_podcaster:
             cur.execute("INSERT INTO marmut.podcaster (email) VALUES (%s)", (email,))
         if role_artist:
-            cur.execute("INSERT INTO marmut.artist (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", (uuid.uuid4(), email, uuid.uuid4()))
+            cur.execute("INSERT INTO marmut.pemilik_hak_cipta (id, rate_royalti) VALUES (%s, %s) ", (id_pemilik_hak_cipta, rate_royalti))
+            cur.execute("INSERT INTO marmut.artist (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", (uuid.uuid4(), email, id_pemilik_hak_cipta))
+            
         if role_songwriter:
-            cur.execute("INSERT INTO marmut.songwriter (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", (uuid.uuid4(), email, uuid.uuid4()))
+            cur.execute("""
+            INSERT INTO marmut.pemilik_hak_cipta (id, rate_royalti)
+            VALUES (%s, %s)
+        """, (id_pemilik_hak_cipta, rate_royalti))
+            cur.execute("INSERT INTO marmut.songwriter (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", (uuid.uuid4(), email, id_pemilik_hak_cipta))
 
         conn.commit()
         cur.close()
@@ -82,7 +91,8 @@ def register_label(request):
         password = (request.POST['password'])
         name = request.POST['name']
         contact = request.POST['contact']
-        id_pemilik_hak_cipta = "default_id"  
+        id_pemilik_hak_cipta = str(uuid.uuid4())
+        rate_royalti = random.randint(4,9)
 
         conn = get_db_connection()
         cur = conn.cursor()
@@ -104,9 +114,14 @@ def register_label(request):
 
         # Masukkin data ke tabel label
         cur.execute("""
+            INSERT INTO marmut.pemilik_hak_cipta (id, rate_royalti)
+            VALUES (%s, %s)
+        """, (id_pemilik_hak_cipta, rate_royalti))
+        cur.execute("""
             INSERT INTO marmut.label (id, nama, email, password, kontak, id_pemilik_hak_cipta)
             VALUES (%s, %s, %s, %s, %s)
         """, (uuid.uuid4(), name, email, password, contact, id_pemilik_hak_cipta))
+        
         conn.commit()
         cur.close()
         conn.close()

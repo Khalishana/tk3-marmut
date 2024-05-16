@@ -1,7 +1,7 @@
 import psycopg2
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.contrib.auth.hashers import make_password, check_password
+import uuid
 
 def get_db_connection():
     conn = psycopg2.connect(
@@ -16,7 +16,7 @@ def get_db_connection():
 def register_user(request):
     if request.method == 'POST':
         email = request.POST['email']
-        password = make_password(request.POST['password'])
+        password = (request.POST['password'])
         name = request.POST['name']
         gender = request.POST['gender']
         birth_place = request.POST['birth_place']
@@ -42,6 +42,8 @@ def register_user(request):
 
         if user_count > 0 or label_count > 0 or nonpremium_count > 0:
             return HttpResponse("Email already registered as user or label")
+        
+        print(password)
 
         # Masukkan data ke tabel akun
         cur.execute("""
@@ -66,7 +68,7 @@ def register_user(request):
 def register_label(request):
     if request.method == 'POST':
         email = request.POST['email']
-        password = make_password(request.POST['password'])
+        password = (request.POST['password'])
         name = request.POST['name']
         contact = request.POST['contact']
         id_pemilik_hak_cipta = "default_id"  # Atur default atau nilai sebenarnya jika ada
@@ -87,9 +89,9 @@ def register_label(request):
 
         # Masukkan data ke tabel label
         cur.execute("""
-            INSERT INTO marmut.label (email, password, nama, kontak, id_pemilik_hak_cipta)
+            INSERT INTO marmut.label (id, nama, email, password, kontak, id_pemilik_hak_cipta)
             VALUES (%s, %s, %s, %s, %s)
-        """, (email, password, name, contact, id_pemilik_hak_cipta))
+        """, (uuid.uuid4(), name, email, password, contact, id_pemilik_hak_cipta))
         conn.commit()
         cur.close()
         conn.close()
@@ -118,7 +120,6 @@ def login(request):
 
     return render(request, 'login.html')
 
-@login_required
 def show_landing(request):
     return render(request, 'landing_page.html', {'user': request.user})
 

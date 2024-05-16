@@ -20,7 +20,7 @@
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Dashboard</a>
+                        <a class="nav-link" href="{% url 'authentication:show_landing' %}">Dashboard</a>
                     </li>
                     <li class="nav-item" data-role="regular_user,artist,songwriter,podcaster">
                         <a class="nav-link" href="#">Chart</a>
@@ -32,7 +32,7 @@
                         </form>
                     </li>
                     <li class="nav-item" data-role="regular_user,artist,songwriter,podcaster">
-                        <a class="nav-link" href="#">Kelola Playlist</a>
+                        <a class="nav-link" href="{% url 'kelola_playlist:manage_playlists' %}">Kelola Playlist</a>
                     </li>
                     <li class="nav-item" data-role="regular_user,artist,songwriter,podcaster">
                         <a class="nav-link" href="#">Langganan Paket</a>

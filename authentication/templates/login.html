@@ -6,18 +6,13 @@
     <title>Marmut - Kelompok 9 Basdat A</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .container {
-            padding-top: 50px;
-        }
-        .card {
-            margin-bottom: 20px;
-        }
+        .container { padding-top: 50px; }
+        .card { margin-bottom: 20px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="card-title text-center"> Marmut - Kelompok 9 Basdat A</h1>
-        <!-- Navigation for Login and Registration -->
+        <h1 class="card-title text-center">Marmut - Kelompok 9 Basdat A</h1>
         <div class="d-flex justify-content-center">
             <button class="btn btn-primary mr-2" onclick="showLogin()">Login</button>
             <button class="btn btn-secondary" onclick="showRegister()">Register</button>
@@ -27,14 +22,15 @@
         <div id="loginForm" style="display: none;" class="card">
             <div class="card-body">
                 <h4 class="card-title">Login</h4>
-                <form>
+                <form action="/login/" method="post"> <!-- Update this action URL as per your URL configuration -->
+                    {% csrf_token %}
                     <div class="form-group">
                         <label>Email:</label>
-                        <input type="email" name="username" id="username" placeholder="username" class="form-control">
+                        <input type="email" name="username" id="username" class="form-control" placeholder="Enter email">
                     </div>
                     <div class="form-group">
                         <label>Password:</label>
-                        <input type="password" class="form-control">
+                        <input type="password" name="password" class="form-control" placeholder="Password">
                     </div>
                     <button type="submit" class="btn btn-primary">Log In</button>
                 </form>
@@ -54,44 +50,45 @@
         <div id="userForm" style="display: none;" class="card">
             <div class="card-body">
                 <h4 class="card-title">Form Registrasi Pengguna</h4>
-                <form>
+                <form action="/register/user" method="post"> <!-- Update this action URL as per your URL configuration -->
+                    {% csrf_token %}
                     <div class="form-group">
                         <label>Email:</label>
-                        <input type="email" name="username" id="username" placeholder="username" class="form-control" required>
+                        <input type="email" name="email" class="form-control" required placeholder="Enter email">
                     </div>
                     <div class="form-group">
                         <label>Password:</label>
-                        <input type="password" class="form-control" required>
+                        <input type="password" name="password" class="form-control" required placeholder="Password">
                     </div>
                     <div class="form-group">
                         <label>Nama:</label>
-                        <input type="text" class="form-control" required>
+                        <input type="text" name="name" class="form-control" required placeholder="Full name">
                     </div>
                     <div class="form-group">
                         <label>Gender:</label>
-                        <select class="form-control" required>
-                            <option>Laki-laki</option>
-                            <option>Perempuan</option>
+                        <select class="form-control" name="gender" required>
+                            <option value=1>Laki-laki</option>
+                            <option value=0>Perempuan</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Tempat lahir:</label>
-                        <input type="text" class="form-control" required>
+                        <input type="text" name="birth_place" class="form-control" required placeholder="Birth place">
                     </div>
                     <div class="form-group">
                         <label>Tanggal lahir:</label>
-                        <input type="date" class="form-control" required>
+                        <input type="date" name="birth_date" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label>Kota asal:</label>
-                        <input type="text" class="form-control" required>
+                        <input type="text" name="hometown" class="form-control" required placeholder="Hometown">
                     </div>
                     <div class="form-group">
                         <label>Role:</label>
                         <div>
-                            <input type="checkbox" id="podcaster"> Podcaster
-                            <input type="checkbox" id="artist"> Artist
-                            <input type="checkbox" id="songwriter"> Songwriter
+                            <input type="checkbox" name="role_podcaster" id="podcaster"> Podcaster
+                            <input type="checkbox" name="role_artist" id="artist"> Artist
+                            <input type="checkbox" name="role_songwriter" id="songwriter"> Songwriter
                         </div>
                     </div>
                     <button type="submit" class="btn btn-success">Register</button>
@@ -103,22 +100,23 @@
         <div id="labelForm" style="display: none;" class="card">
             <div class="card-body">
                 <h4 class="card-title">Form Registrasi Label</h4>
-                <form>
+                <form action="/register/label" method="post"> <!-- Update this action URL as per your URL configuration -->
+                    {% csrf_token %}
                     <div class="form-group">
                         <label>Email:</label>
-                        <input type="email" name="username" id="username" placeholder="username" class="form-control" required>
+                        <input type="email" name="email" class="form-control" required placeholder="Enter email">
                     </div>
                     <div class="form-group">
                         <label>Password:</label>
-                        <input type="password" class="form-control" required>
+                        <input type="password" name="password" class="form-control" required placeholder="Password">
                     </div>
                     <div class="form-group">
                         <label>Nama:</label>
-                        <input type="text" class="form-control" required>
+                        <input type="text" name="name" class="form-control" required placeholder="Company name">
                     </div>
                     <div class="form-group">
                         <label>Kontak:</label>
-                        <input type="text" class="form-control" required>
+                        <input type="text" name="contact" class="form-control" required placeholder="Contact details">
                     </div>
                     <button type="submit" class="btn btn-success">Register</button>
                 </form>

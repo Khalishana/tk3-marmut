@@ -112,14 +112,8 @@ def register_label(request):
             # })
 
         # Masukkin data ke tabel label
-        cur.execute("""
-            INSERT INTO marmut.pemilik_hak_cipta (id, rate_royalti)
-            VALUES (%s, %s)
-        """, (id_pemilik_hak_cipta, rate_royalti))
-        cur.execute("""
-            INSERT INTO marmut.label (id, nama, email, password, kontak, id_pemilik_hak_cipta)
-            VALUES (%s, %s, %s, %s, %s)
-        """, (uuid.uuid4(), name, email, password, contact, id_pemilik_hak_cipta))
+        cur.execute("INSERT INTO marmut.pemilik_hak_cipta (id, rate_royalti) VALUES (%s, %s)", (id_pemilik_hak_cipta, rate_royalti))
+        cur.execute("INSERT INTO marmut.label (id, nama, email, password, kontak, id_pemilik_hak_cipta) VALUES (%s, %s, %s, %s, %s, %s)", (str(uuid.uuid4()), name, email, password, contact, id_pemilik_hak_cipta))
         
         conn.commit()
         cur.close()

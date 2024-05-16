@@ -29,6 +29,7 @@ def register_user(request):
         role_songwriter = 'role_songwriter' in request.POST
         id_pemilik_hak_cipta = str(uuid.uuid4())
         rate_royalti = random.randint(4,9)
+        id_register = str(uuid.uuid4())
 
         user_roles = []
         if role_podcaster:
@@ -64,16 +65,12 @@ def register_user(request):
         # Tambahkan ke tabel role jika role dipilih
         if role_podcaster:
             cur.execute("INSERT INTO marmut.podcaster (email) VALUES (%s)", (email,))
-        if role_artist:
+        if role_artist or role_songwriter:
             cur.execute("INSERT INTO marmut.pemilik_hak_cipta (id, rate_royalti) VALUES (%s, %s) ", (id_pemilik_hak_cipta, rate_royalti))
-            cur.execute("INSERT INTO marmut.artist (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", (uuid.uuid4(), email, id_pemilik_hak_cipta))
-            
-        if role_songwriter:
-            cur.execute("""
-            INSERT INTO marmut.pemilik_hak_cipta (id, rate_royalti)
-            VALUES (%s, %s)
-        """, (id_pemilik_hak_cipta, rate_royalti))
-            cur.execute("INSERT INTO marmut.songwriter (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", (uuid.uuid4(), email, id_pemilik_hak_cipta))
+            if role_artist:
+                cur.execute("INSERT INTO marmut.artist (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", (id_register, email, id_pemilik_hak_cipta))
+            if role_songwriter:
+                cur.execute("INSERT INTO marmut.songwriter (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", (id_register, email, id_pemilik_hak_cipta))
 
         conn.commit()
         cur.close()

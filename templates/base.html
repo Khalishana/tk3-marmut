@@ -47,10 +47,10 @@
                         <a class="nav-link" href="#">Kelola Album & Songs</a>
                     </li>
                     <li class="nav-item" data-role="label">
-                        <a class="nav-link" href="#">Kelola Album</a>
+                        <a class="nav-link" href="{% url 'album_song:show_album' %}">Kelola Album</a>
                     </li>
                     <li class="nav-item" data-role="artist,songwriter,label">
-                        <a class="nav-link" href="#">Cek Royalti</a>
+                        <a class="nav-link" href="{% url 'royalti:show_royalti' %}">Cek Royalti</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'authentication:logout' %}">Logout</a>

@@ -2,7 +2,7 @@ import datetime
 import random
 import psycopg2
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.utils import timezone
 import uuid
 
@@ -491,7 +491,7 @@ def song_detail(request, idPlaylist, idSong):
 
     return render(request, 'play_song.html', context)
 
-def play_song(request, idSong):
+def play_song(request, idPlaylist, idSong):
     email = request.COOKIES.get('email')
 
     if not email:
@@ -499,6 +499,14 @@ def play_song(request, idSong):
 
     conn = get_db_connection()
     cur = conn.cursor()
+
+    # Dapatkan id_user_playlist sebenarnya
+    cur.execute("""
+        SELECT id_user_playlist
+        FROM user_playlist
+        WHERE id_playlist = %s
+    """, (idPlaylist,))
+    id_playlist = cur.fetchone()[0]
 
     try:
         timestamp = datetime.datetime.now()
@@ -508,6 +516,12 @@ def play_song(request, idSong):
             INSERT INTO akun_play_song (email_pemain, id_song, waktu)
             VALUES (%s, %s, %s)
         """, (email, idSong, timestamp))
+
+        # Insert entry to AKUN_PLAY_USER_PLAYLIST
+        cur.execute("""
+            INSERT INTO akun_play_user_playlist (email_pemain, id_user_playlist, email_pembuat, waktu)
+            VALUES (%s, %s, %s, %s)
+        """, (email, id_playlist, email, timestamp))
         
         # Update total play di tabel SONG
         cur.execute("""
@@ -613,7 +627,7 @@ def play_song_detail(request, idSong):
     else:
         return HttpResponse("Metode request tidak diizinkan", status=405)
 
-def add_to_playlist(request, idSong):
+def add_to_playlist(request, idPlaylist, idSong):
     email = request.COOKIES.get('email')
 
     if not email:
@@ -651,7 +665,8 @@ def add_to_playlist(request, idSong):
                 'id': idSong,
                 'judul': song[0],
                 'artist': song[1]
-            }
+            },
+            'id': idPlaylist
         }
 
         return render(request, 'add_to_playlist.html', context)
@@ -713,6 +728,6 @@ def add_to_playlist(request, idSong):
             })
         except Exception as e:
             
-            return HttpResponse(f"Berhasil memasukkan playlist", status=500)
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     else:
         return HttpResponse("Metode request tidak diizinkan", status=405)

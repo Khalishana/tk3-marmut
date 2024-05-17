@@ -3,9 +3,6 @@ from django.db import connection
 from django.contrib import messages
 
 def get_current_user_email(request):
-    # Asumsikan Anda sudah memiliki mekanisme autentikasi pengguna.
-    # Anda bisa menggunakan `request.user.email` jika Anda menggunakan sistem autentikasi Django.
-    # Disini, untuk contoh, kita asumsikan email pengguna diambil dari sesi atau request.
     return request.user.email if request.user.is_authenticated else None
 
 # Create your views here.
@@ -42,12 +39,12 @@ def show_riwayat(request):
 
 def show_transactions(request):
     email = get_current_user_email(request)
-    if not email:
-        messages.error(request, "You need to be logged in to view transactions.")
-        return redirect('authentication:login')
+    # if not email:
+    #     messages.error(request, "You need to be logged in to view transactions.")
+    #     return redirect('authentication:login')
 
     with connection.cursor() as cursor:
-        cursor.execute("SET search_path TO marmut;")
+        #cursor.execute("SET search_path TO marmut;")
         cursor.execute("SELECT jenis_paket, email, timestamp_dimulai, timestamp_berakhir, metode_bayar, nominal FROM transaction WHERE email = %s", [email])
         transactions = cursor.fetchall()
 
@@ -58,7 +55,7 @@ def show_transactions(request):
 
 def show_paket_langganan(request):
     with connection.cursor() as cursor:
-        cursor.execute("SET search_path TO marmut;")
+        #cursor.execute("SET search_path TO marmut;")
         cursor.execute("""
             SELECT jenis, harga
             FROM paket
@@ -72,17 +69,17 @@ def show_paket_langganan(request):
 
 def purchase_subscription(request):
     if request.method == 'POST':
-        email = get_current_user_email(request)
-        if not email:
-            messages.error(request, "Anda harus login terlebih dahulu untuk berlangganan")
-            return redirect('authentication:login')
+        # email = get_current_user_email(request)
+        # if not email:
+        #     messages.error(request, "Anda harus login terlebih dahulu untuk berlangganan")
+        #     return redirect('authentication:login')
 
         jenis_paket = request.POST.get('jenis_paket')
         harga_paket = request.POST.get('harga_paket')
         metode_bayar = request.POST.get('metode_bayar')
 
         with connection.cursor() as cursor:
-            cursor.execute("SET search_path TO marmut;")
+            #cursor.execute("SET search_path TO marmut;")
             cursor.execute("SELECT COUNT(*) FROM transaction WHERE email = %s", [email])
             email_count = cursor.fetchone()[0]
 

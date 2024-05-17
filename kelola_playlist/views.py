@@ -385,11 +385,20 @@ def delete_playlist(request, idPlaylist):
     cur = conn.cursor()
 
     try:
-        # Hapus lagu-lagu dari playlist_song
+        # Cek apakah playlist kosong
         cur.execute("""
-            DELETE FROM playlist_song
+            SELECT COUNT(*)
+            FROM playlist_song
             WHERE id_playlist = %s
         """, (idPlaylist,))
+        count = cur.fetchone()[0]
+
+        if count > 0:
+            # Hapus lagu-lagu dari playlist_song jika playlist tidak kosong
+            cur.execute("""
+                DELETE FROM playlist_song
+                WHERE id_playlist = %s
+            """, (idPlaylist,))
 
         # Hapus playlist dari user_playlist
         cur.execute("""
@@ -397,10 +406,10 @@ def delete_playlist(request, idPlaylist):
             WHERE id_playlist = %s AND email_pembuat = %s
         """, (idPlaylist, email))
 
-        # Hapus entri baru ke tabel PLAYLIST
+        # Hapus entri dari tabel PLAYLIST
         cur.execute("""
-            DELETE FROM playlist (id)
-            VALUES (%s)
+            DELETE FROM playlist
+            WHERE id = %s
         """, (idPlaylist,))
 
         conn.commit()
@@ -413,6 +422,7 @@ def delete_playlist(request, idPlaylist):
         cur.close()
         conn.close()
         return HttpResponse(f"Terjadi kesalahan: {str(e)}", status=500)
+
 
 def song_detail(request, idPlaylist, idSong):
     email = request.COOKIES.get('email')

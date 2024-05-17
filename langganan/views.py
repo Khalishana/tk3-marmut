@@ -100,6 +100,13 @@ def purchase_subscription(request):
                 VALUES (%s, %s, %s, NOW(), NOW() + INTERVAL '1 month', %s, %s)
             """, (str(uuid.uuid4()), jenis_paket, email, metode_bayar, harga_paket))
 
+            # menambahkan pengguna ke tabel premium
+            cursor.execute("""
+                INSERT INTO premium (email)
+                VALUES (%s)
+                ON CONFLICT (email) DO NOTHING
+            """, [email])
+
             messages.success(request, "Langganan berhasil dibeli!")
             return redirect('langganan:show_transactions')
 

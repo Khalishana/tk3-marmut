@@ -20,9 +20,14 @@ def show_create_album(request):
     role = request.COOKIES.get('user_roles') 
     if isinstance(role, str):
         role = role.split(',')
+        
+    email = request.COOKIES.get('email')
 
+    conn = get_db_connection()
+    cur = conn.cursor()
+    
     if request.method == 'POST':
-        judul = request.POST.get('judul')
+        judul_album = request.POST.get('judul_album')
         label = request.POST.get('label')
         id_album = str(uuid.uuid4())
         
@@ -30,21 +35,144 @@ def show_create_album(request):
         cur = conn.cursor()
         
         cur.execute("INSERT INTO album \
-                    VALUES (%s, %s, 0, %s, 0)", (id_album, judul, label))
+                    VALUES (%s, %s, 0, %s, 0)", (id_album, judul_album, label))
+        conn.commit()
+        
+        # Create song dibawah ini
+        id_song = str(uuid.uuid4())
+        judul = request.POST.get('judul')
+        songwriters = request.POST.getlist('songwriter[]')
+        genres = request.POST.getlist('genre[]')
+        durasi = request.POST.get('durasi')
+        current_datetime = datetime.now()
+        date_now = current_datetime.strftime('%Y-%m-%d')
+        current_year = current_datetime.year
+        year_now = '{:04d}'.format(current_year)
+        
+        if "artist" in role:
+            cur.execute("SELECT id FROM artist \
+                        WHERE email_akun = %s", (email,))
+            id_artist = cur.fetchone()[0]
+
+        else:
+            cur.execute("SELECT id FROM songwriter \
+                        WHERE email_akun = %s", (email,))
+            id_songwriter = cur.fetchone()[0]
+        
+        # Insert tabel token
+        cur.execute("INSERT INTO konten \
+                    VALUES (%s, %s, %s, %s, %s)", (id_song, judul, date_now, year_now, durasi))
+        
+        # Insert tabel song
+        cur.execute("INSERT INTO song \
+                    VALUES (%s, %s, %s, 0, 0)", (id_song, id_artist, id_album,))
+        
+        # Insert tabel songwriter_write_song
+        for songwriter in songwriters:
+            cur.execute("SELECT id_pemilik_hak_cipta FROM songwriter \
+                        WHERE id = %s", (songwriter,))
+            hak_cipta_songwriter = cur.fetchone()
+
+            cur.execute("INSERT INTO royalti \
+                        VALUES (%s, %s, 0)", (hak_cipta_songwriter[0], id_song,))
+
+            cur.execute("INSERT INTO songwriter_write_song \
+                        VALUES (%s, %s)", (songwriter, id_song,))
+        
+        # Insert tabel genre
+        for genre in genres:
+            cur.execute("INSERT INTO genre \
+                        VALUES (%s, %s)", (id_song, genre,))
+        
+        # Id untuk hak cipta dari artist
+        if "artist" in role:
+            cur.execute("SELECT id FROM artist \
+                        WHERE email_akun = %s", (email,))
+            user_id = cur.fetchone()[0]
+            cur.execute("SELECT id_pemilik_hak_cipta FROM artist \
+                        WHERE id = %s", (user_id,))
+            hak_cipta_artist = cur.fetchone()
+        else:
+            cur.execute("SELECT id FROM songwriter \
+                        WHERE email_akun = %s", (email,))
+            user_id = cur.fetchone()[0]
+            cur.execute("SELECT id_pemilik_hak_cipta FROM artist \
+                        WHERE id = %s", (user_id,))
+            hak_cipta_artist = cur.fetchone()
+        
+        # Insert tabel royalti untuk artist
+        cur.execute("INSERT INTO royalti \
+                    VALUES (%s, %s, 0)", (hak_cipta_artist[0], id_song,))
+        
+        # Insert tabel royalti untuk label
+        cur.execute("SELECT id_label FROM album \
+                    WHERE id = %s", (id_album,))
+        label = cur.fetchone()
+        cur.execute("SELECT id_pemilik_hak_cipta FROM label \
+                    WHERE id = %s", (label[0],))
+        hak_cipta_label = cur.fetchone()
+        cur.execute("INSERT INTO royalti \
+                    VALUES (%s, %s, 0)", (hak_cipta_label[0], id_song,))
+        
+        # Update value album
+        cur.execute("SELECT jumlah_lagu, total_durasi FROM album \
+                    WHERE id = %s", (id_album,))
+        album = cur.fetchone()
+        add_total_durasi = int(album[1]) + int(durasi)
+        add_jumlah_lagu = int(album[0]) + 1
+        cur.execute("UPDATE album SET\
+                    jumlah_lagu = %s,\
+                    total_durasi = %s\
+                    WHERE id = %s", (add_jumlah_lagu, add_total_durasi, id_album,))
         conn.commit()
         cur.close()
         conn.close()
         
         return redirect('kelola_alsong:show_kelola_album')
-    
-    conn = get_db_connection()
-    cur = conn.cursor()
         
     cur.execute("SELECT id, nama FROM label")
     list_label = cur.fetchall()
     
+    # Pilihan genre
+    cur.execute("SELECT DISTINCT genre FROM genre")
+    genre = cur.fetchall()
+    
+    
+    # Piihan artist
+    cur.execute("SELECT id, email_akun, id_pemilik_hak_cipta FROM artist")
+    list_artist = cur.fetchall()
+    for i in range(len(list_artist)):
+        cur.execute("SELECT nama FROM akun\
+                    WHERE email = %s", (list_artist[i][1],))
+        list_artist[i] = list_artist[i] + cur.fetchone()
+    
+    # Piihan songwriter
+    cur.execute("SELECT id, email_akun, id_pemilik_hak_cipta FROM songwriter")
+    list_songwriter = cur.fetchall()
+    for i in range(len(list_songwriter)):
+        cur.execute("SELECT nama FROM akun\
+                    WHERE email = %s", (list_songwriter[i][1],))
+        list_songwriter[i] = list_songwriter[i] + cur.fetchone()
+        
+    # Nama artist dan songwriter
+    if "artist" in role:
+        cur.execute("SELECT nama FROM akun \
+                    WHERE email = %s", (email,))
+        nama_artist = cur.fetchone()[0]
+    
+    if "songwriter" in role:
+        cur.execute("SELECT nama FROM akun \
+                    WHERE email = %s", (email,))
+        nama_songwriter = cur.fetchone()[0]
+    
     context = {
         'list_label': list_label,  
+        'genre': genre,
+        'nama_artist': nama_artist,
+        'nama_songwriter': nama_songwriter,
+        'list_artist': list_artist,
+        'list_songwriter': list_songwriter,
+        'role': role,
     }
     
     conn.commit()
@@ -151,7 +279,7 @@ def show_create_song(request):
         cur.execute("UPDATE album SET\
                     jumlah_lagu = %s,\
                     total_durasi = %s\
-                    WHERE id = %s", (add_total_durasi, add_jumlah_lagu, album_id,))
+                    WHERE id = %s", (add_jumlah_lagu, add_total_durasi, album_id,))
         
         conn.commit()
         cur.close()

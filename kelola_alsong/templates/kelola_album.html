@@ -43,6 +43,7 @@
         </a>
         <table>
             <thead>
+                {% if list_album %}
                 <tr>
                     <th colspan="5">LIST ALBUM</th>
                 </tr>
@@ -74,6 +75,9 @@
                     </td>
                 </tr>
                 {% endfor %}
+                {% else %}
+                    <h2>Anda Belum Memiliki Album, Mari berkarya</h2>
+                {% endif %}
             </tbody>
         </table>
     </div>

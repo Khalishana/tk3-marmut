@@ -6,13 +6,13 @@
 
 {% block content %}
 <div class="container mt-4">
-    {% if messages %}
+    <!-- {% if messages %}
         <div>
             {% for message in messages %}
                 <div class="alert {{ message.tags }}">{{ message }}</div>
             {% endfor %}
         </div>
-    {% endif %}
+    {% endif %} -->
     <h1 class="text-center mb-4" style="color: black;">Pembayaran Paket</h1>
     <h4 class="text-left mb-4" style="color: black;">Informasi paket yang ingin dibeli:</h4> 
     <div class="card">
@@ -51,5 +51,12 @@
             </div>
         </form>
     </div>
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>
 {% endblock content %}

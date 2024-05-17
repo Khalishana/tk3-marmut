@@ -6,13 +6,6 @@
 
 {% block content %}
 <div class="container mt-4">
-    <!-- {% if messages %}
-        <div>
-            {% for message in messages %}
-                <div class="alert {{ message.tags }}">{{ message }}</div>
-            {% endfor %}
-        </div>
-    {% endif %} -->
     <div class="card">
         <div class="card-body">
             <div style="text-align: center;">
@@ -46,13 +39,6 @@
                     {% endfor %}
                 </tbody>
             </table>
-            {% if messages %}
-                <div class="mt-4">
-                    {% for message in messages %}
-                        <div class="alert {{ message.tags }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
         </div>
     </div>
 </div>

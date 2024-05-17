@@ -32,11 +32,22 @@
     table, th, td {
         border: 1px solid black;
     }
+
+    .back-button {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
     </style>
 </head>
 
 <body>
 <div class="tabel">
+    <div class="back-button">
+        <a href="{% url 'kelola_alsong:show_kelola_album' %}" class="btn btn-secondary">
+            Kembali
+        </a>
+    </div>
     <table>
         <thead>
             {% if showed_song %}

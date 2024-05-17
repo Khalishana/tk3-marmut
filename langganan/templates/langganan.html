@@ -5,13 +5,12 @@
 {% endblock meta_title %}
 
 {% block content %}
-
 <div class="container mt-4">
     <div class="card">
         <div class="card-body">
             <div style="text-align: center;">
                 <h3>Langganan Paket</h3>
-                <a href="{% url 'langganan:show_riwayat' %}">Riwayat Langganan</a>
+                <a href="{% url 'langganan:show_transactions' %}">Riwayat Langganan</a>
             </div>
             <table class="table custom-table">
                 <thead>
@@ -22,46 +21,25 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for paket in pakets %}
                     <tr>
-                        <td>1 Bulan</td>
-                        <td>Rp10.000</td>
-                        <td style="position: relative;" >
+                        <td>{{ paket.0 }}</td>
+                        <td>{{ paket.1 }}</td>
+                        <td style="position: relative;">
                             <div style="position: absolute; top: 0;">
-                                <a href="{% url 'langganan:show_pembayaran' %}">Berlangganan</a>
+                                <form method="post" action="{% url 'langganan:show_pembayaran' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="jenis_paket" value="{{ paket.0 }}">
+                                    <input type="hidden" name="harga_paket" value="{{ paket.1 }}">
+                                    <button type="submit" class="btn btn-outline-primary btn-sm">Berlangganan</button>
+                                </form>
                             </div>
                         </td>
                     </tr>
-                    <tr>
-                        <td>3 Bulan</td>
-                        <td>Rp20.000</td>
-                        <td style="position: relative;" >
-                            <div style="position: absolute; top: 0;">
-                                <a href="#">Berlangganan</a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>6 Bulan</td>
-                        <td>Rp30.000</td>
-                        <td style="position: relative;" >
-                            <div style="position: absolute; top: 0;">
-                                <a href="#">Berlangganan</a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>1 Tahun</td>
-                        <td>Rp40.000</td>
-                        <td style="position: relative;" >
-                            <div style="position: absolute; top: 0;">
-                                <a href="#">Berlangganan</a>
-                            </div>
-                        </td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
 </div>
-    
 {% endblock content %}

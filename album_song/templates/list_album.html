@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block meta%}
-    <title>One Direction</title>
+    <title>Album {{ name }}</title>
 {% endblock meta%}
 
 {% block content %}
@@ -39,6 +39,7 @@
     <div class="tabel">
         <table>
             <thead>
+                {% if showed_album %}
                 <tr>
                     <th colspan="4">LIST ALBUM</th>
                 </tr>
@@ -50,71 +51,24 @@
                 </tr> 
             </thead> 
             <tbody> 
+                {% for album in showed_album %}
                 <tr> 
-                    <td>Up All Night</td> 
-                    <td>13</td> 
-                    <td>45:12</td> 
+                    <td>{{album.1}}</td> 
+                    <td>{{album.2}}</td> 
+                    <td>{{album.4}}</td> 
                     <td>
-                        <a href="http://localhost:8000/label/song" class="btn btn-primary me-3">
+                        <a href= "{% url 'album_song:show_song' %}?album_id={{ album.0 }}" class="btn btn-primary me-3">
                             Lihat
                         </a>
-                        <button class="btn btn-danger">
+                        <a href="{% url 'album_song:delete_album' %}?album_id={{ album.0 }}" class="btn btn-danger">
                             Hapus
-                        </button>
-                    </td>
-                </tr>
-                <tr> 
-                    <td>Take Me Home</td> 
-                    <td>13</td> 
-                    <td>39:50</td> 
-                    <td>
-                        <a href="http://localhost:8000/label/song" class="btn btn-primary me-3">
-                            Lihat
                         </a>
-                        <button class="btn btn-danger">
-                            Hapus
-                        </button>
                     </td>
                 </tr>
-                <tr> 
-                    <td>Midnight Memories</td> 
-                    <td>14</td> 
-                    <td>49:56</td> 
-                    <td>
-                        <a href="http://localhost:8000/label/song" class="btn btn-primary me-3">
-                            Lihat
-                        </a>
-                        <button class="btn btn-danger">
-                            Hapus
-                        </button>
-                    </td>
-                </tr>
-                <tr> 
-                    <td>Four</td> 
-                    <td>16</td> 
-                    <td>58:23</td> 
-                    <td>
-                        <a href="http://localhost:8000/label/song" class="btn btn-primary me-3">
-                            Lihat
-                        </a>
-                        <button class="btn btn-danger">
-                            Hapus
-                        </button>
-                    </td>
-                </tr>
-                <tr> 
-                    <td>Made in the A.M.</td> 
-                    <td>13</td> 
-                    <td>46:36</td> 
-                    <td>
-                        <a href="http://localhost:8000/label/song" class="btn btn-primary me-3">
-                            Lihat
-                        </a>
-                        <button class="btn btn-danger">
-                            Hapus
-                        </button>
-                    </td>
-                </tr>
+                {% endfor %}
+                {% else %}
+                    <h2>Label Anda Belum Memiliki Album</h2>
+                {% endif %}
             </tbody>
         </table>
     </div>

@@ -1,5 +1,110 @@
 from django.shortcuts import render
+import psycopg2
+
+def get_db_connection():
+    conn = psycopg2.connect(
+        dbname="postgres",
+        user="postgres.vjxypfaouaiqkavqanuu",
+        password="marmutkelompok9",
+        host="aws-0-ap-southeast-1.pooler.supabase.com",
+        port="5432",
+    )
+    return conn
 
 # Create your views here.
 def show_royalti(request):
-    return render(request, "royalti.html")
+    role = request.COOKIES.get('user_roles')
+    email = request.COOKIES.get('email')
+    royalti = []
+    
+    if isinstance(role, str):
+        role = role.split(',')
+    
+    print(role)
+    
+    conn = get_db_connection()
+    cur = conn.cursor()
+    
+    if "label" in role:
+        cur.execute("SELECT id_pemilik_hak_cipta FROM label \
+                    WHERE email = %s", (email,))
+        hak_cipta_label = cur.fetchone()[0]
+    
+        cur.execute("SELECT id_song, jumlah FROM royalti \
+                    WHERE id_pemilik_hak_cipta = %s", (hak_cipta_label,))
+        royalti = cur.fetchall()
+        
+        if len(royalti) != 0:
+            for i in range(len(royalti)):
+                cur.execute("SELECT id_album, total_play, total_download FROM song \
+                            WHERE id_konten = %s", (royalti[i][0],))
+                royalti[i] = royalti[i] + cur.fetchone() 
+                cur.execute("SELECT judul FROM album \
+                            WHERE id = %s", (royalti[i][2],))
+                royalti[i] = royalti[i] + cur.fetchone() 
+                cur.execute("SELECT judul FROM konten \
+                            WHERE id = %s", (royalti[i][0],))
+                title = cur.fetchone()
+                title = list(title)
+                title[0] = title[0].split('-')[0].strip()
+                royalti[i] = royalti[i] + tuple(title)
+    else:
+        if "songwriter" in role:
+            cur.execute("SELECT id_pemilik_hak_cipta FROM songwriter \
+                        WHERE email_akun = %s", (email,))
+            hak_cipta_songwriter = cur.fetchone()[0]
+            
+            cur.execute("SELECT id_song, jumlah FROM royalti \
+                        WHERE id_pemilik_hak_cipta = %s", (hak_cipta_songwriter,))
+            royalti += cur.fetchall()
+            
+            if len(royalti) != 0:
+                for i in range(len(royalti)):
+                    cur.execute("SELECT id_album, total_play, total_download FROM song \
+                                WHERE id_konten = %s", (royalti[i][0],))
+                    royalti[i] = royalti[i] + cur.fetchone() 
+                    cur.execute("SELECT judul FROM album \
+                                WHERE id = %s", (royalti[i][2],))
+                    royalti[i] = royalti[i] + cur.fetchone() 
+                    cur.execute("SELECT judul FROM konten \
+                                WHERE id = %s", (royalti[i][0],))
+                    title = cur.fetchone()
+                    title = list(title)
+                    title[0] = title[0].split('-')[0].strip()
+                    royalti[i] = royalti[i] + tuple(title)
+
+        if "artist" in role:
+            cur.execute("SELECT id_pemilik_hak_cipta FROM artist \
+                        WHERE email_akun = %s", (email,))
+            hak_cipta_artist = cur.fetchone()[0]
+            
+            cur.execute("SELECT id_song, jumlah FROM royalti \
+                        WHERE id_pemilik_hak_cipta = %s", (hak_cipta_artist,))
+            royalti += cur.fetchall()
+            
+            if len(royalti) != 0:
+                for i in range(len(royalti)):
+                    cur.execute("SELECT id_album, total_play, total_download FROM song \
+                                WHERE id_konten = %s", (royalti[i][0],))
+                    royalti[i] = royalti[i] + cur.fetchone() 
+                    cur.execute("SELECT judul FROM album \
+                                WHERE id = %s", (royalti[i][2],))
+                    royalti[i] = royalti[i] + cur.fetchone() 
+                    cur.execute("SELECT judul FROM konten \
+                                WHERE id = %s", (royalti[i][0],))
+                    title = cur.fetchone()
+                    title = list(title)
+                    title[0] = title[0].split('-')[0].strip()
+                    royalti[i] = royalti[i] + tuple(title)
+
+                
+    context = {
+        'status': 'success',
+        'role': role,
+        'royalti': royalti,
+    }
+    
+    conn.commit()
+    cur.close()
+    conn.close()
+    return render(request, 'royalti.html', context)

@@ -38,7 +38,11 @@ def show_royalti(request):
             for i in range(len(royalti)):
                 cur.execute("SELECT id_album, total_play, total_download FROM song \
                             WHERE id_konten = %s", (royalti[i][0],))
-                royalti[i] = royalti[i] + cur.fetchone() 
+                song_info = cur.fetchone()
+                royalti[i] = royalti[i] + song_info
+                royalti[i] = list(royalti[i])
+                royalti[i][1] = "Rp " + str(royalti[i][1] * song_info[1])
+                royalti[i] = tuple(royalti[i])
                 cur.execute("SELECT judul FROM album \
                             WHERE id = %s", (royalti[i][2],))
                 royalti[i] = royalti[i] + cur.fetchone() 
@@ -56,13 +60,17 @@ def show_royalti(request):
             
             cur.execute("SELECT id_song, jumlah FROM royalti \
                         WHERE id_pemilik_hak_cipta = %s", (hak_cipta_songwriter,))
-            royalti += cur.fetchall()
+            royalti = cur.fetchall()
             
             if len(royalti) != 0:
                 for i in range(len(royalti)):
                     cur.execute("SELECT id_album, total_play, total_download FROM song \
                                 WHERE id_konten = %s", (royalti[i][0],))
-                    royalti[i] = royalti[i] + cur.fetchone() 
+                    song_info = cur.fetchone()
+                    royalti[i] = royalti[i] + song_info
+                    royalti[i] = list(royalti[i])
+                    royalti[i][1] = "Rp " + str(royalti[i][1] * song_info[1])
+                    royalti[i] = tuple(royalti[i])
                     cur.execute("SELECT judul FROM album \
                                 WHERE id = %s", (royalti[i][2],))
                     royalti[i] = royalti[i] + cur.fetchone() 
@@ -80,24 +88,29 @@ def show_royalti(request):
             
             cur.execute("SELECT id_song, jumlah FROM royalti \
                         WHERE id_pemilik_hak_cipta = %s", (hak_cipta_artist,))
-            royalti += cur.fetchall()
+            royalti_artist = cur.fetchall()
             
-            if len(royalti) != 0:
-                for i in range(len(royalti)):
+            if len(royalti_artist) != 0:
+                for i in range(len(royalti_artist)):
                     cur.execute("SELECT id_album, total_play, total_download FROM song \
-                                WHERE id_konten = %s", (royalti[i][0],))
-                    royalti[i] = royalti[i] + cur.fetchone() 
+                                WHERE id_konten = %s", (royalti_artist[i][0],))
+                    song_info = cur.fetchone()
+                    royalti_artist[i] = royalti_artist[i] + song_info
+                    royalti_artist[i] = list(royalti_artist[i])
+                    royalti_artist[i][1] = "Rp " + str(royalti_artist[i][1] * song_info[1])
+                    royalti_artist[i] = tuple(royalti_artist[i]) 
                     cur.execute("SELECT judul FROM album \
-                                WHERE id = %s", (royalti[i][2],))
-                    royalti[i] = royalti[i] + cur.fetchone() 
+                                WHERE id = %s", (royalti_artist[i][2],))
+                    royalti_artist[i] = royalti_artist[i] + cur.fetchone() 
                     cur.execute("SELECT judul FROM konten \
-                                WHERE id = %s", (royalti[i][0],))
+                                WHERE id = %s", (royalti_artist[i][0],))
                     title = cur.fetchone()
                     title = list(title)
                     title[0] = title[0].split('-')[0].strip()
-                    royalti[i] = royalti[i] + tuple(title)
+                    royalti_artist[i] = royalti_artist[i] + tuple(title)
+                    
+            royalti += royalti_artist
 
-                
     context = {
         'status': 'success',
         'role': role,

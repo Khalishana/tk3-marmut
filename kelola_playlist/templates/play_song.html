@@ -35,7 +35,7 @@
                     <input type="hidden" name="progress" id="progressValue">
                     <button type="submit" class="btn btn-primary mb-2 w-50">Play</button>
                 </form>
-                <form action="{% url 'kelola_playlist:add_to_playlist' song.id %}" method="get">
+                <form action="{% url 'kelola_playlist:add_to_playlist' idPlaylist song.id %}" method="get">
                     <button type="submit" class="btn btn-success mb-2 w-50">Add to Playlist</button>
                 </form>
                 {% if user.is_premium %}

@@ -51,35 +51,15 @@
             </tr> 
         </thead> 
         <tbody> 
+            {% for royalti in royalti%}
             <tr> 
-                <td>Tampar</td> 
-                <td>Sentimental</td> 
-                <td>258,585,705</td> 
-                <td>190,324,432</td> 
-                <td>Rp 809000000</td> 
+                <td>{{royalti.6}}</td> 
+                <td>{{royalti.5}}</td> 
+                <td>{{royalti.3}}</td> 
+                <td>{{royalti.4}}</td> 
+                <td>{{royalti.1}}</td> 
             </tr>
-            <tr> 
-                <td>Little Things</td> 
-                <td>Take Me Home</td> 
-                <td>602,825,595</td> 
-                <td>329,821,318</td> 
-                <td>Rp 2500000000000</td> 
-            </tr>
-            <tr> 
-                <td>Over Again</td> 
-                <td>Take Me Home</td> 
-                <td>161,685,179</td> 
-                <td>87,315,122</td> 
-                <td>Rp 402000000</td> 
-            </tr>
-            <tr> 
-                <td>Bandit</td> 
-                <td>Bandit</td> 
-                <td>105,463,253</td> 
-                <td>67,543,653</td> 
-                <td>Rp 402000000</td> 
-            </tr>
-
+            {% endfor %}
         </tbody>
     </table>
 </div>

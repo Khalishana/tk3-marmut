@@ -174,10 +174,17 @@ def login(request):
             if not user_roles:  
                 user_roles.append('regular_user')
 
-            # Set cookies for roles
+            # Check premium status
+            cur.execute("SELECT COUNT(*) FROM premium WHERE email = %s", (username,))
+            is_premium = cur.fetchone()[0] > 0
+
+            print(f"is_premium: {is_premium}")
+
+            # Set cookies for roles and premium status
             response.set_cookie('user_id', str(uuid.uuid4()), max_age=365*24*60*60)  # 1 year
             response.set_cookie('user_roles', ','.join(user_roles), max_age=365*24*60*60)  # 1 year
-            response.set_cookie('email', username) 
+            response.set_cookie('email', username)
+            response.set_cookie('is_premium', str(is_premium).lower(), max_age=365*24*60*60)  # 1 year
             
             cur.close()
             conn.close()
@@ -186,8 +193,6 @@ def login(request):
             cur.close()
             conn.close()
             return HttpResponse("Invalid login credentials")
-        
-        
 
     return render(request, 'login.html')
 

@@ -35,9 +35,9 @@
                         <a class="nav-link" href="{% url 'kelola_playlist:manage_playlists' %}">Kelola Playlist</a>
                     </li>
                     <li class="nav-item" data-role="regular_user,artist,songwriter,podcaster">
-                        <a class="nav-link" href="#">Langganan Paket</a>
+                        <a class="nav-link" href="{% url 'langganan:show_paket_langganan' %}">Langganan Paket</a>
                     </li>
-                    <li class="nav-item" data-role="premium">
+                    <li class="nav-item" data-premium="true">
                         <a class="nav-link" href="#">Kelola Downloaded Songs</a>
                     </li>
                     <li class="nav-item" data-role="podcaster">
@@ -64,16 +64,35 @@
 </body>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const userRoles = "{{ request.COOKIES.user_roles }}".split(',');
-        const elements = document.querySelectorAll('[data-role]');
-        elements.forEach(element => {
-            const roles = element.getAttribute('data-role').split(',');
-            if (roles.some(role => userRoles.includes(role))) {
+    const userRoles = "{{ request.COOKIES.user_roles|default_if_none:'' }}".split(',');
+    const isPremium = "{{ request.COOKIES.is_premium|default_if_none:'false' }}" === 'true';
+
+    console.log('User Roles:', userRoles);
+    console.log('Is Premium:', isPremium);
+
+    const elements = document.querySelectorAll('[data-role], [data-premium]');
+
+    elements.forEach(element => {
+        const roles = element.getAttribute('data-role');
+        const premium = element.getAttribute('data-premium');
+
+        if (roles) {
+            const rolesArray = roles.split(',');
+            if (rolesArray.some(role => userRoles.includes(role))) {
                 element.style.display = 'block';
             } else {
                 element.style.display = 'none';
             }
-        });
+        }
+
+        if (premium) {
+            if (isPremium) {
+                element.style.display = 'block';
+            } else {
+                element.style.display = 'none';
+            }
+        }
     });
+});
 </script>
 </html>

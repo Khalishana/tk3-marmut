@@ -1,12 +1,10 @@
+import uuid
 from django.shortcuts import redirect, render
 from django.db import connection
 from django.contrib import messages
 
 def get_current_user_email(request):
-    # Asumsikan Anda sudah memiliki mekanisme autentikasi pengguna.
-    # Anda bisa menggunakan `request.user.email` jika Anda menggunakan sistem autentikasi Django.
-    # Disini, untuk contoh, kita asumsikan email pengguna diambil dari sesi atau request.
-    return request.user.email if request.user.is_authenticated else None
+    return request.COOKIES.get('email')
 
 # Create your views here.
 def show_langganan(request):
@@ -47,7 +45,6 @@ def show_transactions(request):
         return redirect('authentication:login')
 
     with connection.cursor() as cursor:
-        cursor.execute("SET search_path TO marmut;")
         cursor.execute("SELECT jenis_paket, email, timestamp_dimulai, timestamp_berakhir, metode_bayar, nominal FROM transaction WHERE email = %s", [email])
         transactions = cursor.fetchall()
 
@@ -58,7 +55,6 @@ def show_transactions(request):
 
 def show_paket_langganan(request):
     with connection.cursor() as cursor:
-        cursor.execute("SET search_path TO marmut;")
         cursor.execute("""
             SELECT jenis, harga
             FROM paket
@@ -72,7 +68,7 @@ def show_paket_langganan(request):
 
 def purchase_subscription(request):
     if request.method == 'POST':
-        email = get_current_user_email(request)
+        email = request.COOKIES.get('email')
         if not email:
             messages.error(request, "Anda harus login terlebih dahulu untuk berlangganan")
             return redirect('authentication:login')
@@ -82,20 +78,36 @@ def purchase_subscription(request):
         metode_bayar = request.POST.get('metode_bayar')
 
         with connection.cursor() as cursor:
-            cursor.execute("SET search_path TO marmut;")
-            cursor.execute("SELECT COUNT(*) FROM transaction WHERE email = %s", [email])
-            email_count = cursor.fetchone()[0]
-
-            if email_count > 0:
-                messages.error(request, "You already have an active subscription.")
-                return redirect('langganan:show_langganan')
-
+            # cek apakah ada langganan yang masih aktif
             cursor.execute("""
-                INSERT INTO transaction (jenis_paket, email, timestamp_dimulai, timestamp_berakhir, metode_bayar, nominal)
-                VALUES (%s, %s, NOW(), NOW() + INTERVAL '1 month', %s, %s)
-            """, (jenis_paket, email, metode_bayar, harga_paket))
+                SELECT COUNT(*) 
+                FROM transaction 
+                WHERE email = %s AND timestamp_berakhir > NOW()
+            """, [email])
+            active_subscription_count = cursor.fetchone()[0]
 
-            messages.success(request, "Subscription purchased successfully!")
+            if active_subscription_count > 0:
+                messages.error(request, "Anda sudah memiliki langganan yang aktif.")
+                context = {
+                    'jenis_paket': jenis_paket,
+                    'harga_paket': harga_paket
+                }
+                return render(request, 'pembayaran.html', context)
+
+            # masukkan transaksi baru
+            cursor.execute("""
+                INSERT INTO transaction (id, jenis_paket, email, timestamp_dimulai, timestamp_berakhir, metode_bayar, nominal)
+                VALUES (%s, %s, %s, NOW(), NOW() + INTERVAL '1 month', %s, %s)
+            """, (str(uuid.uuid4()), jenis_paket, email, metode_bayar, harga_paket))
+
+            # menambahkan pengguna ke tabel premium
+            cursor.execute("""
+                INSERT INTO premium (email)
+                VALUES (%s)
+                ON CONFLICT (email) DO NOTHING
+            """, [email])
+
+            messages.success(request, "Langganan berhasil dibeli!")
             return redirect('langganan:show_transactions')
 
-    return redirect('langganan:show_langganan')
+    return redirect('langganan:show_paket_langganan')

@@ -39,6 +39,7 @@
 <div class="tabel">
     <table>
         <thead>
+            {% if showed_song %}
             <tr>
                 <th colspan="5">DAFTAR LAGU PADA ALBUM {{ album_name }}</th>
             </tr>
@@ -67,6 +68,9 @@
                 </td>
             </tr>
             {% endfor %}
+            {% else %}
+                <h2>Label Anda Belum Memiliki Lagu dari Album Ini</h2>
+            {% endif %}
         </tbody>
     </table>
 </div>

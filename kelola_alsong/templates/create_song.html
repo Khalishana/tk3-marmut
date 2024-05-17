@@ -19,47 +19,89 @@
 <body>
     <div class="container">
         <h2>CREATE SONG</h2>
-        <form action="http://localhost:8000/kelola/song" method="GET"> <!-- nanti ubah jadi POST -->
+        <form method="POST">
+            {% csrf_token %}
             <div class="form-group">
                 <label for="album">Album:</label>
-                <input type="text" class="form-control" id="album" value="Midnight Memories" readonly>
+                <input type="text" class="form-control" id="album" name="album" value="{{album_name.0}}" readonly>
             </div>
             <div class="form-group">
                 <label for="judul">Judul:</label>
-                <input type="text" class="form-control" id="judul" placeholder="Masukkan Judul Lagu">
+                <input type="text" class="form-control" id="judul" name="judul" placeholder="Masukkan Judul Lagu" required>
             </div>
             <div class="form-group">
                 <label for="artist">Artist:</label>
-                <select class="form-control" id="artist">
-                    <option value="">Pilih Artis</option>
-                    <option value="Ed Sheeran">Ed Sheeran</option>
-                    <option value="Taylor Swift">Taylor Swift</option>
-                    <option value="Adele">Adele</option>
-                </select>
+                {% if 'artist' in role %}
+                    <input type="text" class="form-control" id="artist" name="artist" value="{{ nama_artist }}" readonly>
+                {% else %}
+                    <select name="artist" class="form-control" id="artist" required>
+                    {% for artist in list_artist %}
+                        <option value="{{ artist.0 }}">{{ artist.3 }}</option>
+                    {% endfor %}
+                    </select>
+                {% endif %}
             </div>
             <div class="form-group">
                 <label for="songwriter">Songwriter:</label>
-                <select multiple class="form-control" id="songwriter">
-                    <option value="Max Martin">Max Martin</option>
-                    <option value="Sia Furler">Sia Furler</option>
-                    <option value="Ryan Tedder">Ryan Tedder</option>
-                </select>
+                <div class="btn-group-toggle" data-toggle="buttons">
+                    {% for songwriter in list_songwriter %}
+                        <label class="btn btn-light active m-2">
+                            <input type="checkbox" id="songwriter_{{ songwriter.0 }}" name="songwriter[]" value="{{ songwriter.0 }}" autocomplete="off" {% if songwriter.1 == request.COOKIES.email %}checked disabled{% endif %} > {{ songwriter.3 }}
+                        </label>
+                    {% endfor %}
+                </div>
             </div>
             <div class="form-group">
                 <label for="genre">Genre:</label>
-                <select multiple class="form-control" id="genre">
-                    <option value="Pop">Pop</option>
-                    <option value="Rock">Rock</option>
-                    <option value="Jazz">Jazz</option>
-                </select>
+                <div id="genreList" class="btn-group-toggle" data-toggle="buttons">
+                    {% for record in genre %}
+                        <label class="btn btn-light active m-2">
+                            <input type="checkbox" id="genre_{{ record.0 }}" name="genre[]" value="{{ record.0 }}" autocomplete="off"> {{ record.0 }}
+                        </label>
+                    {% endfor %}
+                </div>
+                <button type="button" id="moreButton" class="btn btn-link">More</button>
+                <button type="button" id="lessButton" class="btn btn-link" style="display: none;">Less</button>
             </div>
             <div class="form-group">
                 <label for="durasi">Durasi:</label>
-                <input type="text" class="form-control" id="durasi" placeholder="Masukkan Durasi Lagu">
+                <input type="text" class="form-control" id="durasi" name="durasi" placeholder="Masukkan Durasi Lagu" required>
             </div>
-            <button type="submit" class="btn btn-primary mt-3">SUBMIT</button>
+            <button type="submit" class="btn btn-primary mt-3">Tambah Lagu</button>
         </form>
     </div>
 </body>
 </html>
+<script>
+    var genreList = document.getElementById('genreList');
+    var moreButton = document.getElementById('moreButton');
+    var lessButton = document.getElementById('lessButton');
+    var genreItems = Array.from(genreList.getElementsByClassName('btn'));
+
+    genreItems.forEach(function(item, index) {
+        if (index >= 10) { 
+            item.style.display = 'none';
+        }
+    });
+
+    moreButton.addEventListener('click', function() {
+
+        genreItems.forEach(function(item) {
+            item.style.display = 'inline-block';
+        });
+        moreButton.style.display = 'none';  
+        lessButton.style.display = 'inline';  
+    });
+
+    lessButton.addEventListener('click', function() {
+        genreItems.forEach(function(item, index) {
+            if (index >= 5) {
+                item.style.display = 'none';
+            }
+        });
+        lessButton.style.display = 'none'; 
+        moreButton.style.display = 'inline';  
+    });
+</script>
 {% endblock content %}
+

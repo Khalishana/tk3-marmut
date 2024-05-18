@@ -114,16 +114,6 @@ def show_create_album(request):
         cur.execute("INSERT INTO royalti \
                     VALUES (%s, %s, 0)", (hak_cipta_label[0], id_song,))
         
-        # Update value album
-        cur.execute("SELECT jumlah_lagu, total_durasi FROM album \
-                    WHERE id = %s", (id_album,))
-        album = cur.fetchone()
-        add_total_durasi = int(album[1]) + int(durasi)
-        add_jumlah_lagu = int(album[0]) + 1
-        cur.execute("UPDATE album SET\
-                    jumlah_lagu = %s,\
-                    total_durasi = %s\
-                    WHERE id = %s", (add_jumlah_lagu, add_total_durasi, id_album,))
         conn.commit()
         cur.close()
         conn.close()
@@ -269,17 +259,6 @@ def show_create_song(request):
         hak_cipta_label = cur.fetchone()
         cur.execute("INSERT INTO royalti \
                     VALUES (%s, %s, 0)", (hak_cipta_label[0], id_song,))
-        
-        # Update value albumm
-        cur.execute("SELECT jumlah_lagu, total_durasi FROM album \
-                    WHERE id = %s", (album_id,))
-        album = cur.fetchone()
-        add_total_durasi = int(album[1]) + int(durasi)
-        add_jumlah_lagu = int(album[0]) + 1
-        cur.execute("UPDATE album SET\
-                    jumlah_lagu = %s,\
-                    total_durasi = %s\
-                    WHERE id = %s", (add_jumlah_lagu, add_total_durasi, album_id,))
         
         conn.commit()
         cur.close()

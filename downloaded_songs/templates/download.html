@@ -5,7 +5,6 @@
 {% endblock meta_title %}
 
 {% block content %}
-
 <div class="container mt-4">
     <h1 class="text-center mb-4" style="color: black;">Downloaded Songs Page</h1>
     <div class="card">
@@ -23,72 +22,36 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for song in songs %}
                     <tr>
-                        <td>Right Where You Left Me</td>
-                        <td>Taylor Swift</td>
-                        <td>01/01/2024</td>
+                        <td>{{ song.judul }}</td>
+                        <td>{{ song.oleh }}</td>
+                        <td>{{ song.tanggal_download }}</td>
                         <td style="position: relative;">
-                            <div style="position: absolute; top: 0;">
-                                <a href="#">Lihat</a>
+                            <div style="margin-bottom: 0px;">
+                                <form action="{% url 'kelola_playlist:song_detail' song.id_playlist song.id %}" method="get">
+                                    <button type="submit" class="btn btn-link">Lihat</button>
+                                </form>
                             </div>
-                            <div style="position: absolute; bottom: 0;">
-                                <a href="#">Hapus</a>
+                            <div>
+                                <form action="{% url 'downloaded_songs:delete_downloaded_song' song.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-link">Hapus</button>
+                                </form>
                             </div>
                         </td>
                     </tr>
+                    {% empty %}
                     <tr>
-                        <td>Cikini ke Gondangdia</td>
-                        <td>Duo Anggrek</td>
-                        <td>04/04/2024</td>
-                        <td style="position: relative;" >
-                            <div style="position: absolute; top: 0;">
-                                <a href="#">Lihat</a>
-                            </div>
-                            <div style="position: absolute; bottom: 0;">
-                                <a href="#">Hapus</a>
-                            </div>
-                        </td>
+                        <td colspan="4" class="text-center">No downloaded songs found</td>
                     </tr>
-                    <tr>
-                        <td>Ku Tunggu Kau Putus</td>
-                        <td>Sheryl Sheinafia</td>
-                        <td>05/05/2024</td>
-                        <td style="position: relative;" >
-                            <div style="position: absolute; top: 0;">
-                                <a href="#">Lihat</a>
-                            </div>
-                            <div style="position: absolute; bottom: 0;">
-                                <a href="#">Hapus</a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>What Was I Made For</td>
-                        <td>Billie Elish</td>
-                        <td>02/02/2024</td>
-                        <td style="position: relative;" >
-                            <div style="position: absolute; top: 0;">
-                                <a href="#">Lihat</a>
-                            </div>
-                            <div style="position: absolute; bottom: 0;">
-                                <a href="#">Hapus</a>
-                            </div>
-                        </td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
             <div style="text-align: center;">
-                <a href="#">Kembali</a>
+                <a href="{% url 'authentication:show_landing' %}">Kembali</a>
             </div>
         </div>
     </div>
-    <div class="modal-body text-center" style="color: black;">
-        Berhasil menghapus Lagu dengan judul Alamat Palsu dari daftar unduhan!
-    </div>    
-    <div class="modal-footer d-flex justify-content-center">
-        <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Kembali</button>
-    </div>    
-    
 </div>
-    
 {% endblock content %}

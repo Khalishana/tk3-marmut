@@ -1,13 +1,53 @@
+import datetime
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.db import connection
+import psycopg2
+
+from kelola_playlist.views import get_db_connection
 
 # Create your views here.
-def show_download_page(request):
+def show_downloaded_songs(request):
+    email = request.COOKIES.get('email')
+
+    if not email:
+        return HttpResponse("Email tidak ditemukan dalam cookies", status=400)
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    # Ambil daftar lagu yang diunduh oleh pengguna saat ini
+    cur.execute("""
+        SELECT DISTINCT k.id, k.judul, ak.nama, up.id_playlist
+        FROM downloaded_song ds
+        JOIN konten k ON ds.id_song = k.id
+        JOIN songwriter_write_song sws ON k.id = sws.id_song
+        JOIN songwriter sw ON sws.id_songwriter = sw.id
+        JOIN akun ak ON sw.email_akun = ak.email
+        LEFT JOIN user_playlist up ON k.id = up.id_playlist
+        WHERE ds.email_downloader = %s
+    """, (email,))
+    songs = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    songs_data = []
+    current_date = datetime.date.today().strftime("%d/%m/%Y")
+    for song in songs:
+        songs_data.append({
+            'id': song[0],
+            'judul': song[1],
+            'oleh': song[2],
+            'id_playlist': song[0],
+            'tanggal_download': current_date
+        })
+
     context = {
-        'name': 'Marmut',
-        'class': 'Basdat A'
+        'songs': songs_data
     }
-    return render(request, "download.html", context)
+
+    return render(request, 'download.html', context)
 
 def search_bar(request):
     query = request.GET.get('query', '').lower()  # Get the query and convert it to lowercase
@@ -75,3 +115,81 @@ def search_bar(request):
         'message': message
     }
     return render(request, 'search_bar.html', context)
+
+def confirm_download(request, song_id):
+    email = request.COOKIES.get('email')
+
+    if not email:
+        return HttpResponse("Email tidak ditemukan dalam cookies", status=400)
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    try:
+        # Dapatkan judul lagu berdasarkan song_id
+        cur.execute("SELECT judul FROM konten WHERE id = %s", (str(song_id),))
+        result = cur.fetchone()
+        if not result:
+            return HttpResponse("Lagu tidak ditemukan", status=404)
+        song_title = result[0]
+
+        # Periksa apakah lagu sudah diunduh sebelumnya
+        cur.execute("SELECT COUNT(*) FROM downloaded_song WHERE id_song = %s AND email_downloader = %s", (str(song_id), email))
+        if cur.fetchone()[0] > 0:
+            context = {
+                'error_message': f"Lagu dengan judul '{song_title}' sudah pernah diunduh!"
+            }
+            return render(request, 'confirm_download.html', context)
+
+        # Insert the download record into downloaded_song table
+        cur.execute("""
+            INSERT INTO downloaded_song (id_song, email_downloader)
+            VALUES (%s, %s)
+        """, (str(song_id), email))
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        context = {
+            'message': f"Berhasil mengunduh Lagu dengan judul '{song_title}'!"
+        }
+        return render(request, 'confirm_download.html', context)
+    except Exception as e:
+        conn.rollback()
+        cur.close()
+        conn.close()
+        return HttpResponse(f"Terjadi kesalahan: {str(e)}", status=500)
+
+def delete_downloaded_song(request, song_id):
+    email = request.COOKIES.get('email')
+
+    if not email:
+        return HttpResponse("Email tidak ditemukan dalam cookies", status=400)
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    try:
+        # Hapus lagu dari tabel downloaded_song
+        cur.execute("DELETE FROM downloaded_song WHERE id_song = %s AND email_downloader = %s", (str(song_id), email))
+        conn.commit()
+
+        # Dapatkan judul lagu berdasarkan song_id
+        cur.execute("SELECT judul FROM konten WHERE id = %s", (str(song_id),))
+        result = cur.fetchone()
+        if not result:
+            return HttpResponse("Lagu tidak ditemukan", status=404)
+        song_title = result[0]
+
+        cur.close()
+        conn.close()
+
+        context = {
+            'message': f"Berhasil menghapus Lagu dengan judul '{song_title}' dari daftar unduhan!"
+        }
+        return render(request, 'delete_confirmation.html', context)
+    except Exception as e:
+        conn.rollback()
+        cur.close()
+        conn.close()
+        return HttpResponse(f"Terjadi kesalahan: {str(e)}", status=500)

@@ -38,8 +38,8 @@
                 <form action="{% url 'kelola_playlist:add_to_playlist' song.id %}" method="get">
                     <button type="submit" class="btn btn-success mb-2 w-50">Add to Playlist</button>
                 </form>
-                {% if user.is_premium %}
-                    <button onclick="location.href='{{ url_download_song }}'" class="btn btn-info mb-2 w-50">Download</button>
+                {% if is_premium %}
+                    <button class="btn btn-success mb-2 w-50" onclick="window.location.href='{% url 'downloaded_songs:confirm_download' song.id %}'">Download</button>
                 {% endif %}
                 <form action="{% url 'kelola_playlist:playlist_detail' idPlaylist %}" method="get">
                     <button type="submit" class="btn btn-success mb-2 w-50">Kembali</button>
@@ -58,5 +58,10 @@
             alert("Progress belum mencapai 70%");
         }
     });
+
+    function downloadSong(button) {
+        var url = button.getAttribute('data-href');
+        window.location.href = url;
+    }
 </script>
 {% endblock %}

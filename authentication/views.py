@@ -15,7 +15,7 @@ def get_db_connection():
     )
     return conn
 
-@csrf_exempt
+
 def register_user(request):
     if request.method == 'POST':
         email = request.POST['email']
@@ -82,7 +82,7 @@ def register_user(request):
     
     return render(request, 'login.html', {'show_form': 'registerOptions'})
 
-@csrf_exempt
+
 def register_label(request):
     if request.method == 'POST':
         email = request.POST['email']
@@ -126,7 +126,7 @@ def register_label(request):
 
     return render(request, 'login.html')
 
-@csrf_exempt
+
 def login(request):
     if request.method == 'POST':
         username = request.POST['username']

@@ -50,34 +50,34 @@ def show_downloaded_songs(request):
     return render(request, 'download.html', context)
 
 def search_bar(request):
-    query = request.GET.get('query', '').lower()  # Get the query and convert it to lowercase
-    results = []
+    query = request.GET.get('query', '').lower()  
+    results = {}
     message = ""
 
     if query:
         with connection.cursor() as cursor:
             # Searching in Podcasts
             cursor.execute("""
-                SELECT 'PODCAST' AS type,
-                k.judul AS judul,
-                a.nama AS oleh
-                FROM podcast p
-                JOIN konten k ON p.id_konten = k.id
-                JOIN podcaster pod ON p.email_podcaster = pod.email
-                JOIN akun a ON pod.email = a.email
+                SELECT 'PODCAST' AS type, k.judul AS judul, COALESCE(a.nama, 'Unknown') AS oleh, k.id
+                FROM konten k
+                LEFT JOIN podcast p ON k.id = p.id_konten
+                LEFT JOIN podcaster pod ON p.email_podcaster = pod.email
+                LEFT JOIN akun a ON pod.email = a.email
                 WHERE LOWER(k.judul) LIKE %s
             """, [f"%{query}%"])
             podcast_results = cursor.fetchall()
-            results.extend(podcast_results)
-
-            # Debugging: Print hasil query podcast
-            print("Podcast Results:", podcast_results)
+            for result in podcast_results:
+                results[result[1].lower()] = {
+                    'type': result[0],
+                    'title': result[1],
+                    'by': result[2],
+                    'id': result[3],
+                    'id_playlist': None  
+                }
 
             # Searching in Songs
             cursor.execute("""
-                SELECT 'SONG' AS type,
-                k.judul AS judul,
-                a.nama AS oleh
+                SELECT 'SONG' AS type, k.judul AS judul, COALESCE(a.nama, 'Unknown') AS oleh, k.id
                 FROM song s
                 JOIN konten k ON s.id_konten = k.id
                 JOIN artist ar ON s.id_artist = ar.id
@@ -85,20 +85,35 @@ def search_bar(request):
                 WHERE LOWER(k.judul) LIKE %s OR LOWER(a.nama) LIKE %s
             """, [f"%{query}%", f"%{query}%"])
             song_results = cursor.fetchall()
-            results.extend(song_results)
+            for result in song_results:
+                results[result[1].lower()] = {
+                    'type': result[0],
+                    'title': result[1],
+                    'by': result[2],
+                    'id': result[3],
+                    'id_playlist': None  
+                }
+
             print("Song Results:", song_results)
 
             # Searching in User Playlists
             cursor.execute("""
-                SELECT 'USER PLAYLIST' AS type,
-                up.judul AS judul,
-                a.nama AS oleh
+                SELECT 'USER PLAYLIST' AS type, up.judul AS judul, COALESCE(a.nama, 'Unknown') AS oleh, up.id_playlist
                 FROM user_playlist up
                 JOIN akun a ON up.email_pembuat = a.email
                 WHERE LOWER(up.judul) LIKE %s
             """, [f"%{query}%"])
             playlist_results = cursor.fetchall()
-            results.extend(playlist_results)
+            for result in playlist_results:
+                if result[1].lower() not in results:
+                    results[result[1].lower()] = {
+                        'type': result[0],
+                        'title': result[1],
+                        'by': result[2],
+                        'id': result[3],
+                        'id_playlist': result[3]  
+                    }
+
             print("Playlist Results:", playlist_results)
 
     if not results:
@@ -106,12 +121,7 @@ def search_bar(request):
 
     context = {
         'query': query,
-        'results': [{
-            'type': result[0],
-            'title': result[1],
-            'by': result[2],
-            'url': '#'  # Placeholder for the URL. Update this as needed.
-        } for result in results],
+        'results': list(results.values()),
         'message': message
     }
     return render(request, 'search_bar.html', context)

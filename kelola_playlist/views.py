@@ -469,6 +469,10 @@ def song_detail(request, idPlaylist, idSong):
     """, (idSong,))
     songwriters = cur.fetchall()
 
+    # Cek apakah pengguna premium
+    cur.execute("SELECT COUNT(*) FROM premium WHERE email = %s", (email,))
+    is_premium = cur.fetchone()[0] > 0
+
     cur.close()
     conn.close()
 
@@ -486,7 +490,8 @@ def song_detail(request, idPlaylist, idSong):
         },
         'genres': [genre[0] for genre in genres],
         'songwriters': [songwriter[0] for songwriter in songwriters],
-        'idPlaylist': idPlaylist
+        'idPlaylist': idPlaylist,
+        'is_premium': is_premium
     }
 
     return render(request, 'play_song.html', context)

@@ -23,7 +23,7 @@ urlpatterns = [
     path('label/', include('album_song.urls')),
     path('kelola/', include('kelola_alsong.urls')),
     path('', include('authentication.urls')),
-    path('downloaded/', include('downloaded_songs.urls')),
+    path('downloaded/', include('downloaded_songs.urls', namespace='downloaded_songs')),
     path('search/', include('downloaded_songs.urls')),
     path('manage_playlist', include('kelola_playlist.urls')),
     path('play_song', include('play_song.urls')),

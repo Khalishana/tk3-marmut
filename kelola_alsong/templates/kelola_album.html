@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block meta%}
-    <title>One Direction</title>
+    <title>{{nama_user}}</title>
 {% endblock meta%}
 
 {% block content %}
@@ -10,8 +10,9 @@
     <style>
     .tabel {
         display: flex;
+        flex-direction: column;
         justify-content: center;
-        align-items: flex-start;
+        align-items:  center; 
         padding-top: 10%; 
         padding-bottom: 10%;
     }
@@ -37,99 +38,46 @@
 
 <body>
     <div class="tabel">
+        <a href="{% url 'kelola_alsong:show_create_album' %}" class="btn btn-primary mb-3">
+            Buat Album Baru
+        </a>
         <table>
             <thead>
+                {% if list_album %}
                 <tr>
-                    <th colspan="4">LIST ALBUM</th>
+                    <th colspan="5">LIST ALBUM</th>
                 </tr>
                 <tr>
                     <th>Judul</th>
+                    <th>Label</th>
                     <th>Jumlah Lagu</th>
                     <th>Total Durasi</th>
                     <th>Action</th>
                 </tr> 
             </thead> 
             <tbody> 
+                {% for album in list_album %}
                 <tr> 
-                    <td>Up All Night</td> 
-                    <td>13</td> 
-                    <td>45:12</td> 
+                    <td>{{album.1}}</td> 
+                    <td>{{album.5}}</td> 
+                    <td>{{album.3}}</td> 
+                    <td>{{album.4}} menit</td> 
                     <td>
-                        <a href="http://localhost:8000/kelola/song" class="btn btn-primary me-3">
+                        <a href= "{% url 'kelola_alsong:show_kelola_song' album_id=album.0  %}" class="btn btn-primary me-3">
                             Lihat
                         </a>
-                        <a href="http://localhost:8000/kelola/create/song" class="btn btn-success me-3">
+                        <a href= "{% url 'kelola_alsong:show_create_song' %}?album_id={{ album.0 }}" class="btn btn-success me-3">
                             Tambah Lagu
                         </a>
-                        <button class="btn btn-danger">
+                        <a href="{% url 'kelola_alsong:delete_album' %}?album_id={{ album.0 }}" class="btn btn-danger">
                             Hapus
-                        </button>
+                        </a>
                     </td>
                 </tr>
-                <tr> 
-                    <td>Take Me Home</td> 
-                    <td>13</td> 
-                    <td>39:50</td> 
-                    <td>
-                        <a href="http://localhost:8000/kelola/song" class="btn btn-primary me-3">
-                            Lihat
-                        </a>
-                        <a href="http://localhost:8000/kelola/create/song" class="btn btn-success me-3">
-                            Tambah Lagu
-                        </a>
-                        <button class="btn btn-danger">
-                            Hapus
-                        </button>
-                    </td>
-                </tr>
-                <tr> 
-                    <td>Midnight Memories</td> 
-                    <td>14</td> 
-                    <td>49:56</td> 
-                    <td>
-                        <a href="http://localhost:8000/kelola/song" class="btn btn-primary me-3">
-                            Lihat
-                        </a>
-                        <a href="http://localhost:8000/kelola/create/song" class="btn btn-success me-3">
-                            Tambah Lagu
-                        </a>
-                        <button class="btn btn-danger">
-                            Hapus
-                        </button>
-                    </td>
-                </tr>
-                <tr> 
-                    <td>Four</td> 
-                    <td>16</td> 
-                    <td>58:23</td> 
-                    <td>
-                        <a href="http://localhost:8000/kelola/song" class="btn btn-primary me-3">
-                            Lihat
-                        </a>
-                        <a href="http://localhost:8000/kelola/create/song" class="btn btn-success me-3">
-                            Tambah Lagu
-                        </a>
-                        <button class="btn btn-danger">
-                            Hapus
-                        </button>
-                    </td>
-                </tr>
-                <tr> 
-                    <td>Made in the A.M.</td> 
-                    <td>13</td> 
-                    <td>46:36</td> 
-                    <td>
-                        <a href="http://localhost:8000/kelola/song" class="btn btn-primary me-3">
-                            Lihat
-                        </a>
-                        <a href="http://localhost:8000/kelola/create/song" class="btn btn-success me-3">
-                            Tambah Lagu
-                        </a>
-                        <button class="btn btn-danger">
-                            Hapus
-                        </button>
-                    </td>
-                </tr>
+                {% endfor %}
+                {% else %}
+                    <h2>Anda Belum Memiliki Album, Mari berkarya</h2>
+                {% endif %}
             </tbody>
         </table>
     </div>

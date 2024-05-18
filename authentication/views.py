@@ -65,13 +65,13 @@ def register_user(request):
 
         # Tambahkan ke tabel role jika role dipilih
         if role_podcaster:
-            cur.execute("INSERT INTO marmut.podcaster (email) VALUES (%s)", (email,))
+            cur.execute("INSERT INTO podcaster (email) VALUES (%s)", (email,))
         if role_artist or role_songwriter:
-            cur.execute("INSERT INTO marmut.pemilik_hak_cipta (id, rate_royalti) VALUES (%s, %s) ", (id_pemilik_hak_cipta, rate_royalti))
+            cur.execute("INSERT INTO pemilik_hak_cipta (id, rate_royalti) VALUES (%s, %s) ", (id_pemilik_hak_cipta, rate_royalti))
             if role_artist:
-                cur.execute("INSERT INTO marmut.artist (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", (id_register, email, id_pemilik_hak_cipta))
+                cur.execute("INSERT INTO artist (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", (id_register, email, id_pemilik_hak_cipta))
             if role_songwriter:
-                cur.execute("INSERT INTO marmut.songwriter (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", (id_register, email, id_pemilik_hak_cipta))
+                cur.execute("INSERT INTO songwriter (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", (id_register, email, id_pemilik_hak_cipta))
 
         conn.commit()
         cur.close()

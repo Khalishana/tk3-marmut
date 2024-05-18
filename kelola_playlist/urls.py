@@ -17,8 +17,9 @@ urlpatterns = [
     path('delete/<uuid:idPlaylist>/', delete_playlist, name='delete_playlist'),
     path('song_detail/<uuid:idPlaylist>/<uuid:idSong>/', song_detail, name='song_detail'),
     path('play_song_detail/<uuid:idSong>/', play_song_detail, name='play_song_detail'),
-    path('play_song/<uuid:idSong>/', play_song, name='play_song'),
+    path('play_song/<uuid:idPlaylist>/<uuid:idSong>/', play_song, name='play_song'),
     path('delete_song/<uuid:idPlaylist>/<uuid:idSong>/', delete_song, name='delete_song'),
     path('add_to_playlist/<uuid:idSong>/', add_to_playlist, name='add_to_playlist'),
     path('download_song/<uuid:idSong>/', confirm_download, name='download_song'),
+    path('add_to_playlist/<uuid:idPlaylist>/<uuid:idSong>/', add_to_playlist, name='add_to_playlist'),
 ]

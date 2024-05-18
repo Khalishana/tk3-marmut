@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Podcast</title>
+    <title>Add Episode</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
@@ -24,15 +24,8 @@
         label {
             font-weight: bold;
         }
-        input[type="text"] {
-            width: 100%;
-            padding: 8px;
-            margin: 6px 0;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        select {
+        input[type="text"],
+        textarea {
             width: 100%;
             padding: 8px;
             margin: 6px 0;
@@ -55,35 +48,25 @@
     </style>
 </head>
 <body>
-    <h2>CREATE PODCAST</h2>
+    <h2>CREATE EPISODE</h2>
     <form method="post">
         {% csrf_token %}
+        <input type="hidden" name="id_konten" value="{{ id_konten }}">
         <div class="form-group">
             <label for="judul">Judul:</label>
-            <input type="text" class="form-control" id="judul" name="judul" required>
+            <input type="text" class="form-control" id="judul" name="judul">
         </div>
         <div class="form-group">
-            <label for="genre">Genre:</label>
-            <select class="form-control" id="genre" name="genre" multiple required>
-                <option value="Comedy">Comedy</option>
-                <option value="Horror">Horror</option>
-            </select>
+            <label for="deskripsi">Deskripsi:</label>
+            <textarea class="form-control" id="deskripsi" name="deskripsi" rows="4" cols="50"></textarea>
         </div>
         <div class="form-group">
-            <label for="tanggal_rilis">Tanggal Rilis:</label>
-            <input type="date" class="form-control" id="tanggal_rilis" name="tanggal_rilis" required>
-        </div>
-        <div class="form-group">
-            <label for="tahun">Tahun:</label>
-            <input type="number" class="form-control" id="tahun" name="tahun" required>
-        </div>
-        <div class="form-group">
-            <label for="durasi">Durasi (menit):</label>
-            <input type="number" class="form-control" id="durasi" name="durasi" required>
+            <label for="durasi">Durasi:</label>
+            <input type="text" class="form-control" id="durasi" name="durasi"> menit
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-</body>
+</body> 
 </html>
 {% endblock %}
 

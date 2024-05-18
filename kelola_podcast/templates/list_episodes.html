@@ -1,14 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Episode</title>
+    <title>List Episodes</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="container mt-5">
-        <h2>DAFTAR EPISODE PADA PODCAST1</h2>
+    <div class="container">
+        <h2>DAFTAR EPISODE</h2>
         <table class="table">
             <thead>
                 <tr>
@@ -20,15 +23,22 @@
                 </tr>
             </thead>
             <tbody>
+                {% for episode in episodes %}
                 <tr>
-                    <td>Podcast Halo</td>
-                    <td>Raditya Dika</td>
-                    <td>60 menit</td>
-                    <td>21/10/2021</td>
-                    <td><a href="#">[Hapus]</a></td>
+                    <td>{{ episode.judul }}</td>
+                    <td>{{ episode.deskripsi }}</td>
+                    <td>{{ episode.durasi }} menit</td>
+                    <td>{{ episode.tanggal_rilis }}</td>
+                    <td>
+                        <a href="{% url 'kelola_podcast:delete_episode' episode.id_episode id_konten %}" class="btn btn-danger">Hapus</a>
+                    </td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
 </body>
 </html>
+{% endblock %}
+
+

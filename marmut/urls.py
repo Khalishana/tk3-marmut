@@ -32,4 +32,6 @@ urlpatterns = [
     path('pembayaran/', include('langganan.urls')),
     path('riwayat/', include('langganan.urls')),
     path('kelola_podcast/', include('kelola_podcast.urls')),
+    path('melihat_chart/', include('melihat_chart.urls')),
+    path('play_podcast/', include('play_podcast.urls')),
 ]

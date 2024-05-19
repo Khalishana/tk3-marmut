@@ -134,6 +134,11 @@
 </head>
 <body>
     <div class="album">
+        <a href="{% url 'kelola_alsong:show_create_album' %}">
+            <div class="button green">
+                <div class="text-wrapper-2">Create Album</div>
+            </div>
+        </a>
         {% if list_album %}
         <div class="text-wrapper-3">List Album dari {{nama_user}}</div>
         <div class="table">

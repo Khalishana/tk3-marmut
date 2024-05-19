@@ -16,6 +16,7 @@ def get_db_connection():
     )
     return conn
 
+
 def register_user(request):
     if request.method == 'POST':
         email = request.POST['email']
@@ -82,6 +83,7 @@ def register_user(request):
     
     return render(request, 'login.html', {'show_form': 'registerOptions'})
 
+
 def register_label(request):
     if request.method == 'POST':
         email = request.POST['email']
@@ -124,6 +126,7 @@ def register_label(request):
         # })
 
     return render(request, 'login.html')
+
 
 def login(request):
     if request.method == 'POST':

@@ -42,7 +42,7 @@
                 <td>
                   <div class="text-center mb-2"> <a href="{% url 'kelola_playlist:song_detail' playlist.id song.id %}" class="btn btn-info btn-sm mr-1">Lihat</a> </div>
                   <div class="text-center mb-2"> 
-                    <form action="{% url 'kelola_playlist:play_song' song.id %}" method="post">
+                    <form action="{% url 'kelola_playlist:play_song' playlist.id song.id %}" method="post">
                       {% csrf_token %}
                       <button type="submit" class="btn btn-success btn-sm mr-1">Play</button>
                     </form>

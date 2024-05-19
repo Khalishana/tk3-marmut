@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block meta_title %}
+    Hapus Lagu
+{% endblock meta_title %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="alert alert-success text-center">
+        {{ message }}
+    </div>
+    <div class="d-flex justify-content-center">
+        <a href="{% url 'downloaded_songs:show_downloaded_songs' %}" class="btn btn-primary me-2">Kembali</a>
+    </div>
+</div>
+{% endblock content %}

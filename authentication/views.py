@@ -1,4 +1,5 @@
 import random
+from django.db import connection
 import psycopg2
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
@@ -65,13 +66,13 @@ def register_user(request):
 
         # Tambahkan ke tabel role jika role dipilih
         if role_podcaster:
-            cur.execute("INSERT INTO marmut.podcaster (email) VALUES (%s)", (email,))
+            cur.execute("INSERT INTO podcaster (email) VALUES (%s)", (email,))
         if role_artist or role_songwriter:
-            cur.execute("INSERT INTO marmut.pemilik_hak_cipta (id, rate_royalti) VALUES (%s, %s) ", (id_pemilik_hak_cipta, rate_royalti))
+            cur.execute("INSERT INTO pemilik_hak_cipta (id, rate_royalti) VALUES (%s, %s) ", (id_pemilik_hak_cipta, rate_royalti))
             if role_artist:
-                cur.execute("INSERT INTO marmut.artist (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", (id_register, email, id_pemilik_hak_cipta))
+                cur.execute("INSERT INTO artist (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", (id_register, email, id_pemilik_hak_cipta))
             if role_songwriter:
-                cur.execute("INSERT INTO marmut.songwriter (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", (id_register, email, id_pemilik_hak_cipta))
+                cur.execute("INSERT INTO songwriter (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", (id_register, email, id_pemilik_hak_cipta))
 
         conn.commit()
         cur.close()
@@ -200,8 +201,83 @@ def login(request):
     return render(request, 'login.html')
 
 def show_landing(request):
-    user_id = request.COOKIES.get('user_id')
-    return render(request, 'landing_page.html', {'user_id': user_id})
+    email = request.COOKIES.get('email')
+    if not email:
+        return HttpResponse("Email tidak ditemukan dalam cookies", status=400)
+
+    user_data = {}
+    is_label = False
+
+    with connection.cursor() as cursor:
+        # Mengecek apakah email terdaftar sebagai label
+        cursor.execute("SELECT nama, email, kontak FROM label WHERE email = %s", [email])
+        result = cursor.fetchone()
+        if result:
+            user_data['nama'] = result[0]
+            user_data['email'] = result[1]
+            user_data['kontak'] = result[2]
+            is_label = True
+        else:
+            # Mengambil data dari tabel akun
+            cursor.execute("""
+                SELECT nama, email, kota_asal, gender, tempat_lahir, tanggal_lahir 
+                FROM akun 
+                WHERE email = %s
+            """, [email])
+            result = cursor.fetchone()
+            if result:
+                user_data['nama'] = result[0]
+                user_data['email'] = result[1]
+                user_data['kota_asal'] = result[2]
+                user_data['gender'] = 'Perempuan' if result[3] == 0 else 'Laki-laki'
+                user_data['tempat_lahir'] = result[4]
+                user_data['tanggal_lahir'] = result[5]
+
+            # Mengecek role pengguna
+            roles = []
+            cursor.execute("SELECT 1 FROM songwriter WHERE email_akun = %s", [email])
+            if cursor.fetchone():
+                roles.append('Songwriter')
+
+            cursor.execute("SELECT 1 FROM artist WHERE email_akun = %s", [email])
+            if cursor.fetchone():
+                roles.append('Artist')
+
+            cursor.execute("SELECT 1 FROM podcaster WHERE email = %s", [email])
+            if cursor.fetchone():
+                roles.append('Podcaster')
+
+            if not roles:
+                roles.append('Pengguna Biasa')
+
+            user_data['role'] = ', '.join(roles)
+
+            # Mengecek status langganan
+            cursor.execute("SELECT 1 FROM premium WHERE email = %s", [email])
+            if cursor.fetchone():
+                user_data['status_langganan'] = 'Premium'
+            else:
+                cursor.execute("SELECT 1 FROM nonpremium WHERE email = %s", [email])
+                if cursor.fetchone():
+                    user_data['status_langganan'] = 'Nonpremium'
+                else:
+                    user_data['status_langganan'] = 'Tidak diketahui'
+
+            # Mengambil data playlist jika pengguna biasa
+            if 'Pengguna Biasa' in roles:
+                cursor.execute("""
+                    SELECT judul
+                    FROM user_playlist
+                    WHERE email_pembuat = %s
+                """, [email])
+                playlists = cursor.fetchall()
+                if playlists:
+                    user_data['playlists'] = [playlist[0] for playlist in playlists]
+                else:
+                    user_data['playlists'] = None
+
+    user_data['is_label'] = is_label
+    return render(request, 'landing_page.html', user_data)
 
 def logout_view(request):
     response = HttpResponseRedirect(reverse('authentication:login'))

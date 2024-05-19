@@ -2,7 +2,7 @@ import datetime
 import random
 import psycopg2
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.utils import timezone
 import uuid
 
@@ -163,13 +163,15 @@ def shuffle_play(request, id):
     conn = get_db_connection()
     cur = conn.cursor()
 
+    
+
     try:
-        # Cari id_user_playlist dengan menggunakan id_playlist dan email
+        # Cari id_user_playlist dan email pembuat dengan menggunakan id_playlist
         cur.execute("""
-            SELECT id_user_playlist
+            SELECT id_user_playlist, email_pembuat
             FROM user_playlist
-            WHERE id_playlist = %s AND email_pembuat = %s
-        """, (id, email))
+            WHERE id_playlist = %s
+        """, (id, ))
         result = cur.fetchone()
 
         if not result:
@@ -178,13 +180,14 @@ def shuffle_play(request, id):
             return HttpResponse("Playlist tidak ditemukan atau bukan milik Anda", status=404)
 
         id_user_playlist = result[0]
+        email_pembuat = result[1]
         timestamp = datetime.datetime.now()
 
         # Insert entry to AKUN_PLAY_USER_PLAYLIST
         cur.execute("""
             INSERT INTO akun_play_user_playlist (email_pemain, id_user_playlist, email_pembuat, waktu)
             VALUES (%s, %s, %s, %s)
-        """, (email, id_user_playlist, email, timestamp))
+        """, (email, id_user_playlist, email_pembuat, timestamp))
 
         # Get songs in the playlist
         cur.execute("""
@@ -204,12 +207,25 @@ def shuffle_play(request, id):
                 INSERT INTO akun_play_song (email_pemain, id_song, waktu)
                 VALUES (%s, %s, %s)
             """, (email, song_id, timestamp))
+            
+            # Update total play di tabel SONG
+            cur.execute("""
+                UPDATE song
+                SET total_play = total_play + 1
+                WHERE id_konten = %s
+            """, (song_id,))
 
         conn.commit()
         cur.close()
         conn.close()
 
-        return redirect('kelola_playlist:playlist_detail', id=id)
+        return HttpResponse("""
+                <script>
+                    alert('Shuffle berhasil dilakukan ke playlist!');
+                    window.location.href = document.referrer;
+                </script>
+            """)
+    
     except Exception as e:
         conn.rollback()
         cur.close()
@@ -287,14 +303,6 @@ def add_song_to_playlist(request, idPlaylist):
             INSERT INTO playlist_song (id_playlist, id_song)
             VALUES (%s, %s)
         """, (idPlaylist, song_id))
-        
-        # Perbarui jumlah lagu dan total durasi di user_playlist
-        cur.execute("""
-            UPDATE user_playlist
-            SET jumlah_lagu = jumlah_lagu + 1,
-                total_durasi = total_durasi + (SELECT durasi FROM konten WHERE id = %s)
-            WHERE id_playlist = %s
-        """, (song_id, idPlaylist))
 
         conn.commit()
         cur.close()
@@ -469,6 +477,10 @@ def song_detail(request, idPlaylist, idSong):
     """, (idSong,))
     songwriters = cur.fetchall()
 
+    # Cek apakah pengguna premium
+    cur.execute("SELECT COUNT(*) FROM premium WHERE email = %s", (email,))
+    is_premium = cur.fetchone()[0] > 0
+
     cur.close()
     conn.close()
 
@@ -486,12 +498,13 @@ def song_detail(request, idPlaylist, idSong):
         },
         'genres': [genre[0] for genre in genres],
         'songwriters': [songwriter[0] for songwriter in songwriters],
-        'idPlaylist': idPlaylist
+        'idPlaylist': idPlaylist,
+        'is_premium': is_premium
     }
 
     return render(request, 'play_song.html', context)
 
-def play_song(request, idSong):
+def play_song(request, idPlaylist, idSong):
     email = request.COOKIES.get('email')
 
     if not email:
@@ -499,6 +512,16 @@ def play_song(request, idSong):
 
     conn = get_db_connection()
     cur = conn.cursor()
+
+    # Dapatkan id_user_playlist dan email pembuat sebenarnya
+    cur.execute("""
+        SELECT id_user_playlist, email_pembuat
+        FROM user_playlist
+        WHERE id_playlist = %s
+    """, (idPlaylist,))
+    result = cur.fetchone()
+    id_playlist = result[0]
+    email_pembuat = result[1]
 
     try:
         timestamp = datetime.datetime.now()
@@ -508,6 +531,12 @@ def play_song(request, idSong):
             INSERT INTO akun_play_song (email_pemain, id_song, waktu)
             VALUES (%s, %s, %s)
         """, (email, idSong, timestamp))
+
+        # Insert entry to AKUN_PLAY_USER_PLAYLIST
+        cur.execute("""
+            INSERT INTO akun_play_user_playlist (email_pemain, id_user_playlist, email_pembuat, waktu)
+            VALUES (%s, %s, %s, %s)
+        """, (email, id_playlist, email_pembuat, timestamp))
         
         # Update total play di tabel SONG
         cur.execute("""
@@ -547,6 +576,14 @@ def delete_song(request, idPlaylist, idSong):
             DELETE FROM playlist_song
             WHERE id_playlist = %s AND id_song = %s
         """, (idPlaylist, idSong))
+
+        # Perbarui jumlah lagu dan total durasi di user_playlist
+        cur.execute("""
+            UPDATE user_playlist
+            SET jumlah_lagu = jumlah_lagu - 1,
+                total_durasi = total_durasi - (SELECT durasi FROM konten WHERE id = %s)
+            WHERE id_playlist = %s
+        """, (idSong, idPlaylist))
 
         conn.commit()
         cur.close()
@@ -613,7 +650,7 @@ def play_song_detail(request, idSong):
     else:
         return HttpResponse("Metode request tidak diizinkan", status=405)
 
-def add_to_playlist(request, idSong):
+def add_to_playlist(request, idPlaylist, idSong):
     email = request.COOKIES.get('email')
 
     if not email:
@@ -651,7 +688,8 @@ def add_to_playlist(request, idSong):
                 'id': idSong,
                 'judul': song[0],
                 'artist': song[1]
-            }
+            },
+            'id': idPlaylist
         }
 
         return render(request, 'add_to_playlist.html', context)
@@ -713,6 +751,6 @@ def add_to_playlist(request, idSong):
             })
         except Exception as e:
             
-            return HttpResponse(f"Berhasil memasukkan playlist", status=500)
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     else:
         return HttpResponse("Metode request tidak diizinkan", status=405)

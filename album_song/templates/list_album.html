@@ -1,78 +1,166 @@
 {% extends 'base.html' %}
 
 {% block meta%}
-    <title>Album {{ name }}</title>
+    <title>Album {{ nama }}</title>
 {% endblock meta%}
 
 {% block content %}
 <html lang="en">
 <head>
     <style>
-    .tabel {
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        padding-top: 10%; 
-        padding-bottom: 10%;
-    }
+        .album {
+            width: 1336px;
+            background-color: rgb(247, 247, 247);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-shadow: 0 8px 16px rgba(27, 27, 27, 0.1);
+            border-radius: 10px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 100px;
+        }
 
-    thead th {
-        background-color: #f2f2f2;
-    }
+        .album .table {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            width: 100%;
+            background-color: #363636;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #5b5b5b;
+        }
 
-    tbody tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
+        a {
+            text-decoration: none;
+            color: inherit; 
+        }
 
-    thead th, tbody td {
-        padding: 15px;
-        text-align: center;
-    }
+        .album .header, .album .row {
+            display: contents;  
+        }
 
-    table, th, td {
-        border: 1px solid black;
-    }
+        .album .cell, .album .header-cell, .album .action-cell {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            border-top: 2px solid #5b5b5b;
+            border-left: 2px solid #5b5b5b;
+        }
+
+        .album .header-cell {
+            background-color: #dedede;
+            font-weight: 600;
+            color: #212121;
+            font-size: 32px;
+            text-align: center;
+            line-height: 42px;
+        }
+
+        .album .cell {
+            background-color: #f9f9f9;
+            font-weight: 400;
+            color: #212121;
+            font-size: 32px;
+            text-align: center;
+            line-height: 42px;
+        }
+
+        .album .action-cell {
+            background-color: #f9f9f9;
+        }
+
+        .album .button-container {
+            display: flex;
+            background-color: rgb(247, 247, 247);
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .album .button {
+            width: 130px;
+            height: 40px;
+            background-color: #2d77bb;
+            border-radius: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 5px;
+        }
+
+        .album .button.red {
+            background-color: #bb2d2d;
+        }
+
+        .album .button:hover {
+            background-color: #1a5a8d;
+            cursor: pointer; 
+        }
+
+            .album .button.red:hover {
+            background-color: #992222; 
+        }
+
+        .album .text-wrapper-2 {
+            font-weight: 400;
+            color: #f3f3f3;
+            font-size: 20px;
+            text-align: center;
+            line-height: 28px;
+            white-space: nowrap;
+        }
+
+        .album .text-wrapper-3 {
+            font-weight: 700;
+            color: #292828;
+            font-size: 56px;
+            text-align: center;
+            line-height: 73px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
-
 <body>
-    <div class="tabel">
-        <table>
-            <thead>
-                {% if showed_album %}
-                <tr>
-                    <th colspan="4">LIST ALBUM</th>
-                </tr>
-                <tr>
-                    <th>Judul</th>
-                    <th>Jumlah Lagu</th>
-                    <th>Total Durasi</th>
-                    <th>Action</th>
-                </tr> 
-            </thead> 
-            <tbody> 
-                {% for album in showed_album %}
-                <tr> 
-                    <td>{{album.1}}</td> 
-                    <td>{{album.2}}</td> 
-                    <td>{{album.4}}</td> 
-                    <td>
-                        <a href= "{% url 'album_song:show_song' %}?album_id={{ album.0 }}" class="btn btn-primary me-3">
-                            Lihat
-                        </a>
-                        <a href="{% url 'album_song:delete_album' %}?album_id={{ album.0 }}" class="btn btn-danger">
-                            Hapus
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                    <h2>Label Anda Belum Memiliki Album</h2>
-                {% endif %}
-            </tbody>
-        </table>
+    <div class="album">
+        {% if showed_album %}
+        <div class="text-wrapper-3">List Album dari {{ nama }}</div>
+        <div class="table">
+        <div class="header">
+            <div class="header-cell">Judul</div>
+            <div class="header-cell">Jumlah Lagu</div>
+            <div class="header-cell">Total Durasi</div>
+            <div class="header-cell">Action</div>
+        </div>
+        {% for album in showed_album %}
+        <div class="row">
+            <div class="cell">{{album.1}}</div>
+            <div class="cell">{{album.2}}</div>
+            <div class="cell">{{album.4}} menit</div>
+            <div class="action-cell">
+            <div class="button-container">
+                <a href="{% url 'album_song:show_song' %}?album_id={{ album.0 }}">
+                    <div class="button">
+                    <div class="text-wrapper-2">Lihat</div>
+                    </div>
+                </a>
+                <a href="{% url 'album_song:delete_album' %}?album_id={{ album.0 }}">
+                    <div class="button red">
+                    <div class="text-wrapper-2">Hapus</div>
+                    </div>
+                </a>
+            </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+            <h2>Label Anda Belum Memiliki Album</h2>
+        {% endif %}
+        </div>
     </div>
 </body>
-
 </html>
 {% endblock content %}

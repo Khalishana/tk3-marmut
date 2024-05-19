@@ -60,7 +60,7 @@
             </tbody>
           </table>
         </div>
-
+        {% if playlist.pemilik %}
         <a href="{% url 'kelola_playlist:add_song' playlist.id %}" class="btn btn-primary">Tambah Lagu</a>
       </div>
     </div>

@@ -100,7 +100,7 @@ def search_bar(request):
 
             # Searching in User Playlists
             cursor.execute("""
-                SELECT 'USER PLAYLIST' AS type, up.judul AS judul, COALESCE(a.nama, 'Unknown') AS oleh, p.id_playlist
+                SELECT 'USER PLAYLIST' AS type, up.judul AS judul, COALESCE(a.nama, 'Unknown') AS oleh, p.id
                 FROM user_playlist up
                 JOIN akun a ON up.email_pembuat = a.email
                 CROSS JOIN playlist p

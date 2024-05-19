@@ -47,6 +47,7 @@
                       <button type="submit" class="btn btn-success btn-sm mr-1">Play</button>
                     </form>
                   </div>
+                  {% if playlist.pemilik %}
                   <div class="text-center mb-2"> 
                     <form action="{% url 'kelola_playlist:delete_song' playlist.id song.id %}" method="post">
                       {% csrf_token %}

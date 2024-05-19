@@ -96,17 +96,19 @@ def playlist_detail(request, id):
     
     # Ambil detail playlist
     cur.execute("""
-        SELECT p.id_user_playlist, p.judul, p.deskripsi, p.jumlah_lagu, p.total_durasi, p.tanggal_dibuat, a.nama, p.id_playlist
+        SELECT p.id_user_playlist, p.judul, p.deskripsi, p.jumlah_lagu, p.total_durasi, p.tanggal_dibuat, a.nama, p.id_playlist, p.email_pembuat
         FROM user_playlist p
         JOIN akun a ON p.email_pembuat = a.email
-        WHERE p.id_playlist = %s AND p.email_pembuat = %s
-    """, (id, email))
+        WHERE p.id_playlist = %s
+    """, (id))
     playlist = cur.fetchone()
     
     if not playlist:
         cur.close()
         conn.close()
         return HttpResponse("Playlist tidak ditemukan", status=404)
+    
+    pemilik_sebenarnya = email and playlist[8]
     
     playlist_data = {
         'id_user_playlist': playlist[0],
@@ -118,7 +120,8 @@ def playlist_detail(request, id):
         'tanggal_dibuat': playlist[5],
         'pembuat': playlist[6],
         'id': playlist[7],
-        'lagu': []
+        'lagu': [],
+        'pemilik': pemilik_sebenarnya
     }
     
     # Ambil daftar lagu dalam playlist

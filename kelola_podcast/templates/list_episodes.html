@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Episodes</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>DAFTAR EPISODE</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Judul Episode</th>
+                    <th>Deskripsi</th>
+                    <th>Durasi</th>
+                    <th>Tanggal</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for episode in episodes %}
+                <tr>
+                    <td>{{ episode.judul }}</td>
+                    <td>{{ episode.deskripsi }}</td>
+                    <td>{{ episode.durasi }} menit</td>
+                    <td>{{ episode.tanggal_rilis }}</td>
+                    <td>
+                        <a href="{% url 'kelola_podcast:delete_episode' episode.id_episode id_konten %}" class="btn btn-danger">Hapus</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="{% url 'kelola_podcast:list_podcast' %}" class="btn btn-secondary" style="margin-top: 10px;">See List of Podcasts</a>
+</body>
+</html>
+{% endblock %}
+
+

@@ -72,6 +72,7 @@ def search_bar(request):
                     'title': result[1],
                     'by': result[2],
                     'id': result[3],
+                    'url': f"/play_podcast/podcast/{result[3]}",
                     'id_playlist': None  
                 }
 

@@ -1,3 +1,6 @@
+{% extends 'base.html' %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,18 +41,19 @@
 <body>
     <div class="container">
         <h2>PODCAST DETAIL</h2>
-        <p><strong>Judul:</strong> Podcast1</p>
+        <p><strong>Judul:</strong> {{ podcast.judul }}</p>
         <p><strong>Genre(s):</strong></p>
         <ul>
-            <li>Genre1</li>
-            <li>Genre2</li>
+            {% for genre in genres %}
+            <li>{{ genre }}</li>
+            {% endfor %}
         </ul>
-        <p><strong>Podcaster:</strong> Artist1</p>
-        <p><strong>Total Durasi:</strong> 8 jam 20 menit</p>
-        <p><strong>Tanggal Rilis:</strong> 18/03/24</p>
-        <p><strong>Tahun:</strong> 2024</p>
+        <p><strong>Podcaster:</strong> {{ podcast.podcaster }}</p>
+        <p><strong>Total Durasi:</strong> {{ podcast.durasi }}</p>
+        <p><strong>Tanggal Rilis:</strong> {{ podcast.tanggal_rilis|date:"d/m/Y" }}</p>
+        <p><strong>Tahun:</strong> {{ podcast.tahun }}</p>
         
-        <a href="#" class="back-button">[Kembali]</a>
+        <a href="javascript:history.back()" class="back-button">[Kembali]</a>
 
         <div class="episode-list">
             <h2>DAFTAR EPISODE</h2>
@@ -63,21 +67,18 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for episode in episodes %}
                     <tr>
-                        <td>SubJudul1</td>
-                        <td>Lorem Ipsum ....</td>
-                        <td>59 menit</td>
-                        <td>18/03/2024</td>
+                        <td>{{ episode.judul }}</td>
+                        <td>{{ episode.deskripsi }}</td>
+                        <td>{{ episode.durasi }}</td>
+                        <td>{{ episode.tanggal_rilis|date:"d/m/Y" }}</td>
                     </tr>
-                    <tr>
-                        <td>SubJudul2</td>
-                        <td>Lorem Ipsum ....</td>
-                        <td>1 jam 2 menit</td>
-                        <td>25/03/2024</td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
 </body>
 </html>
+{% endblock %}

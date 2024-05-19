@@ -1,112 +1,44 @@
 {% extends 'base.html' %}
 
 {% block meta_title %}
-    Marmut Page
+    Search Results
 {% endblock meta_title %}
 
 {% block content %}
-    <div class="container mt-4">
-        <div class="card">
-            <div class="card-body">
-                <div style="text-align: center;">
-                    <h3>Hasil Pencarian "Bandung"</h3>
+<div class="container mt-4">
+    <h2 class="text-center mb-4" style="color: black;">Hasil pencarian "{{ query }}"</h2>
+    <div class="card">
+        <div class="card-body">
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Tipe</th>
+                        <th scope="col">Judul</th>
+                        <th scope="col">Oleh</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr>
+                        <td>{{ result.type }}</td>
+                        <td>{{ result.title }}</td>
+                        <td>{{ result.by }}</td>
+                        <td><a href="{{ result.url }}" class="btn btn-outline-primary btn-sm">Lihat</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">No results found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% if message %}
+                <div class="mt-4 text-center">
+                    <p>{{ message }}</p>
                 </div>
-                <table class="table custom-table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Tipe</th>
-                            <th scope="col">Judul</th>
-                            <th scope="col">Oleh</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>SONG</td>
-                            <td>Bandung</td>
-                            <td>Yura Yunita</td>
-                            <td style="position: relative;">
-                                <div style="position: absolute; top: 0;">
-                                    <a href="#">Lihat</a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>SONG</td>
-                            <td>Dan Bandung</td>
-                            <td>Pidi Baiq</td>
-                            <td style="position: relative;" >
-                                <div style="position: absolute; top: 0;">
-                                    <a href="#">Lihat</a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>SONG</td>
-                            <td>Kembali Ke Bandung</td>
-                            <td>Kahitna</td>
-                            <td style="position: relative;" >
-                                <div style="position: absolute; top: 0;">
-                                    <a href="#">Lihat</a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>PODCAST</td>
-                            <td>Bandung Tanpa Kamu</td>
-                            <td>Vhie Saleindra</td>
-                            <td style="position: relative;" >
-                                <div style="position: absolute; top: 0;">
-                                    <a href="#">Lihat</a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>USER PLAYLIST</td>
-                            <td>Bandung dan Hujan</td>
-                            <td>eriinera</td>
-                            <td style="position: relative;" >
-                                <div style="position: absolute; top: 0;">
-                                    <a href="#">Lihat</a>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>    
-    </div>
-
-    <!-- case pencarian tidak berhasil -->
-    <style>
-        .container {
-            height: 90vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-    
-        .center-box {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-        }
-    
-        .content {
-            text-align: center;
-        }
-    </style>
-    </head>
-    <body>
-    
-    <div class="container">
-        <div class="center-box">
-            <div class="content">
-                Maaf, pencarian untuk "Depok" tidak ditemukan
-            </div>
+            {% endif %}
         </div>
-    </div>    
-    
     </div>
-    
+</div>
 {% endblock content %}

@@ -6,17 +6,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chart Detail</title>
+    <title>Chart List</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0px;
         }
-        h1, h2 {
+        h1 {
             text-align: center;
         }
         table {
-            width: 80%;
+            width: 50%;
             margin: 20px auto;
             border-collapse: collapse;
         }
@@ -38,24 +38,17 @@
     </style>
 </head>
 <body>
-    <h1>CHART DETAIL</h1>
-    <h2>Tipe: {{ tipe }}</h2>
+    <h1>CHART LIST</h1>
     <table>
         <tr>
-            <th>Judul Lagu</th>
-            <th>Oleh</th>
-            <th>Tanggal Rilis</th>
-            <th>Total Plays</th>
+            <th>Tipe</th>
             <th>Actions</th>
         </tr>
-        {% for song in songs %}
+        {% for chart in charts %}
         <tr>
-            <td>{{ song.judul }}</td>
-            <td>{{ song.artist }}</td>
-            <td>{{ song.tanggal_rilis }}</td>
-            <td>{{ song.total_play }}</td>
+            <td>{{ chart.tipe }}</td>
             <td>
-                <a href="{% url 'melihat_chart:song_detail' song.id_konten %}">Lihat</a>
+                <a href="{% url 'melihat_chart:chart_detail' chart.tipe %}">Lihat Daftar Lagu</a>
             </td>
         </tr>
         {% endfor %}
@@ -65,3 +58,5 @@
 </body>
 </html>
 {% endblock %}
+
+

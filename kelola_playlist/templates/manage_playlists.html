@@ -17,13 +17,18 @@
                 <tbody>
                     {% for playlist in playlists %}
                     <tr>
-                        <td>{{ playlist.title }}</td>
-                        <td>{{ playlist.songs.count }}</td>
-                        <td>{{ playlist.duration }} menit</td>
+                        <td>{{ playlist.judul }}</td>
+                        <td>{{ playlist.jumlah_lagu }}</td>
+                        <td>{{ playlist.total_durasi_jam }} jam {{ playlist.total_durasi_menit }} menit</td>
                         <td>
-                          <div class="text-center mb-2"> <a href="playlist_detail.html" class="btn btn-primary">Detail</a> </div>
-                          <div class="text-center mb-2"> <a href="#" class="btn btn-secondary">Ubah</a> </div>
-                          <div class="text-center mb-2"> <a href="#" class="btn btn-danger">Hapus</a> </div>
+                          <div class="text-center mb-2"> <a href="{% url 'kelola_playlist:playlist_detail' playlist.id %}" class="btn btn-primary">Detail</a> </div>
+                          <div class="text-center mb-2"> <a href="{% url 'kelola_playlist:update_playlist' playlist.id %}" class="btn btn-secondary">Ubah</a> </div>
+                          <div class="text-center mb-2">
+                            <form action="{% url 'kelola_playlist:delete_playlist' playlist.id %}" method="post" style="display:inline;">
+                              {% csrf_token %}
+                              <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus playlist ini?')">Hapus</button>
+                            </form>
+                          </div>
                         </td>
                     </tr>
                     {% empty %}
@@ -35,7 +40,7 @@
             </table>
         </div>
         <p class="text-center">
-            <a href="add_playlist.html" class="btn btn-success">Tambah Playlist</a>
+            <a href="{% url 'kelola_playlist:add_playlist' %}" class="btn btn-success">Tambah Playlist</a>
         </p>
     </div>
 </div>

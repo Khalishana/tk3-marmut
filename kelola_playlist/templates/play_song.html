@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title text-center">SONG DETAIL</h2>
+            <p><strong>Judul:</strong> {{ song.judul }}</p>
+            <p><strong>Genre(s):</strong></p>
+            <ul>
+                {% for genre in genres %}
+                <li>{{ genre }}</li>
+                {% endfor %}
+            </ul>
+            <p><strong>Artist:</strong> {{ song.artist }}</p>
+            <p><strong>Songwriter(s):</strong></p>
+            <ul>
+                {% for songwriter in songwriters %}
+                <li>{{ songwriter }}</li>
+                {% endfor %}
+            </ul>
+            <p><strong>Durasi:</strong> {{ song.durasi }} menit</p>
+            <p><strong>Tanggal Rilis:</strong> {{ song.tanggal_rilis }}</p>
+            <p><strong>Tahun:</strong> {{ song.tahun }}</p>
+            <p><strong>Total Play:</strong> {{ song.total_play }}</p>
+            <p><strong>Total Downloads:</strong> {{ song.total_download }}</p>
+            <p><strong>Album:</strong> {{ song.album }}</p>
+
+            <div class="d-flex justify-content-center mb-3">
+                <input type="range" min="0" max="100" value="0" class="form-control-range w-75" id="songProgress">
+            </div>
+            <div class="text-center mt-4">
+                <form action="{% url 'kelola_playlist:play_song_detail' song.id %}" method="post" id="playSongForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="progress" id="progressValue">
+                    <button type="submit" class="btn btn-primary mb-2 w-50">Play</button>
+                </form>
+                <form action="{% url 'kelola_playlist:add_to_playlist' idPlaylist song.id %}" method="get">
+                    <button type="submit" class="btn btn-success mb-2 w-50">Add to Playlist</button>
+                </form>
+                {% if user.is_premium %}
+                    <button onclick="location.href='{{ url_download_song }}'" class="btn btn-info mb-2 w-50">Download</button>
+                {% endif %}
+                <form action="{% url 'kelola_playlist:playlist_detail' idPlaylist %}" method="get">
+                    <button type="submit" class="btn btn-success mb-2 w-50">Kembali</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('playSongForm').addEventListener('submit', function(event) {
+        var progress = document.getElementById("songProgress").value;
+        document.getElementById("progressValue").value = progress;
+        if (progress <= 70) {
+            event.preventDefault();
+            alert("Progress belum mencapai 70%");
+        }
+    });
+</script>
+{% endblock %}

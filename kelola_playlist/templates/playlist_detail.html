@@ -7,17 +7,20 @@
         <h1 class="mt-4 mb-4">USER PLAYLIST DETAIL</h1>
         <div class="card mb-4">
           <div class="card-body">
-            <p class="card-text">Judul: {{ playlist.title }}</p>
-            <p class="card-text">Pembuat: {{ playlist.creator }}</p>
-            <p class="card-text">Jumlah Lagu: {{ playlist.songs.count }}</p>
-            <p class="card-text">Total Durasi: {{ playlist.duration }} menit</p>
-            <p class="card-text">Tanggal Dibuat: {{ playlist.date_added }} menit</p>
-            <p class="card-text">Deskripsi: {{ playlist.description }}</p>
+            <p class="card-text">Judul: {{ playlist.judul }}</p>
+            <p class="card-text">Pembuat: {{ playlist.pembuat }}</p>
+            <p class="card-text">Jumlah Lagu: {{ playlist.jumlah_lagu }}</p>
+            <p class="card-text">Total Durasi: {{ playlist.total_durasi_jam }} jam {{ playlist.total_durasi_menit }} menit</p>
+            <p class="card-text">Tanggal Dibuat: {{ playlist.tanggal_dibuat }}</p>
+            <p class="card-text">Deskripsi: {{ playlist.deskripsi }}</p>
           </div>
         </div>
 
-        <a href="#" class="btn btn-primary mr-2" onclick="shufflePlay(); return false;">Shuffle Play</a>
-        <a href="manage_playlists.html" class="btn btn-secondary">Kembali</a>
+        <form action="{% url 'kelola_playlist:shuffle_play' playlist.id %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary mr-2">Shuffle Play</button>
+        </form>
+        <a href="{% url 'kelola_playlist:manage_playlists' %}" class="btn btn-secondary">Kembali</a>
 
         <h2 class="mt-4 mb-3">Daftar Lagu</h2>
         <div class="table-responsive">
@@ -31,15 +34,25 @@
               </tr>
             </thead>
             <tbody>
-              {% for song in playlist.songs.all %}
+              {% for song in playlist.lagu %}
               <tr>
-                <td>{{ song.title }}</td>
+                <td>{{ song.judul }}</td>
                 <td>{{ song.artist }}</td>
-                <td>{{ song.duration }} menit</td>
+                <td>{{ song.durasi }} menit</td>
                 <td>
-                  <div class="text-center mb-2"> <a href="#" class="btn btn-info btn-sm mr-1">Lihat</a> </div>
-                  <div class="text-center mb-2"> <a href="#" class="btn btn-success btn-sm mr-1">Mainkan</a> </div>
-                  <div class="text-center mb-2"> <a href="#" class="btn btn-danger btn-sm">Hapus</a> </div>
+                  <div class="text-center mb-2"> <a href="{% url 'kelola_playlist:song_detail' playlist.id song.id %}" class="btn btn-info btn-sm mr-1">Lihat</a> </div>
+                  <div class="text-center mb-2"> 
+                    <form action="{% url 'kelola_playlist:play_song' playlist.id song.id %}" method="post">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-success btn-sm mr-1">Play</button>
+                    </form>
+                  </div>
+                  <div class="text-center mb-2"> 
+                    <form action="{% url 'kelola_playlist:delete_song' playlist.id song.id %}" method="post">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                    </form>
+                  </div>
                 </td>
               </tr>
               {% endfor %}
@@ -47,7 +60,7 @@
           </table>
         </div>
 
-        <a href="add_song.html" class="btn btn-primary">Tambah Lagu</a>
+        <a href="{% url 'kelola_playlist:add_song' playlist.id %}" class="btn btn-primary">Tambah Lagu</a>
       </div>
     </div>
   </div>

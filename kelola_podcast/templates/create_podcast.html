@@ -65,8 +65,9 @@
         <div class="form-group">
             <label for="genre">Genre:</label>
             <select class="form-control" id="genre" name="genre" multiple required>
-                <option value="Comedy">Comedy</option>
-                <option value="Horror">Horror</option>
+                {% for genre in genres %}
+                    <option value="{{ genre.genre }}">{{ genre.genre }}</option>
+                {% endfor %}
             </select>
         </div>
         <div class="form-group">
@@ -77,12 +78,9 @@
             <label for="tahun">Tahun:</label>
             <input type="number" class="form-control" id="tahun" name="tahun" required>
         </div>
-        <div class="form-group">
-            <label for="durasi">Durasi (menit):</label>
-            <input type="number" class="form-control" id="durasi" name="durasi" required>
-        </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+    <a href="{% url 'kelola_podcast:list_podcast' %}" class="btn btn-secondary" style="margin-top: 10px;">See List of Podcasts</a>
 </body>
 </html>
 {% endblock %}

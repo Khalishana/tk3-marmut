@@ -35,7 +35,7 @@ def format_duration(minutes):
 
 def podcast_detail(request, id_konten):
     podcast_query = """
-        SELECT K.judul, K.tanggal_rilis, K.tahun, K.durasi, A.nama AS podcaster
+        SELECT K.judul, K.tanggal_rilis, K.tahun, A.nama AS podcaster
         FROM PODCAST P
         JOIN KONTEN K ON P.id_konten = K.id
         JOIN AKUN A ON P.email_podcaster = A.email
@@ -58,14 +58,19 @@ def podcast_detail(request, id_konten):
     """
     episodes = execute_query(episode_query, [id_konten])
 
-    # Format duration for podcast and episodes
-    podcast['durasi'] = format_duration(podcast['durasi'])
+    # Calculate the total duration of all episodes
+    total_duration = sum(episode['durasi'] for episode in episodes)
+
+    # Format duration for episodes
     for episode in episodes:
         episode['durasi'] = format_duration(episode['durasi'])
+
+    podcast['durasi'] = format_duration(total_duration)
 
     return render(request, 'play_podcast.html', {
         'podcast': podcast,
         'genres': [genre['genre'] for genre in genres],
         'episodes': episodes
     })
+
 

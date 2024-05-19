@@ -33,13 +33,12 @@ def create_podcast(request):
         genre = request.POST.getlist('genre')
         tanggal_rilis = request.POST.get('tanggal_rilis')
         tahun = request.POST.get('tahun')
-        durasi = request.POST.get('durasi')
 
         email = request.COOKIES.get('email')
 
         # Insert into KONTEN table first
-        konten_query = "INSERT INTO KONTEN (id, judul, tanggal_rilis, tahun, durasi) VALUES (gen_random_uuid(), %s, %s, %s, %s) RETURNING id"
-        konten_result = execute_query(konten_query, [judul, tanggal_rilis, tahun, durasi])
+        konten_query = "INSERT INTO KONTEN (id, judul, tanggal_rilis, tahun, durasi) VALUES (gen_random_uuid(), %s, %s, %s, 0) RETURNING id"
+        konten_result = execute_query(konten_query, [judul, tanggal_rilis, tahun])
         id_konten = konten_result[0]['id']
 
         # Insert into PODCAST table using the id from KONTEN
@@ -51,7 +50,12 @@ def create_podcast(request):
             execute_query("INSERT INTO GENRE (id_konten, genre) VALUES (%s, %s)", [id_konten, g])
         
         return redirect('kelola_podcast:list_podcast')
-    return render(request, 'create_podcast.html')
+    
+    genre_query = "SELECT DISTINCT genre FROM GENRE"
+    genres = execute_query(genre_query)
+    
+    return render(request, 'create_podcast.html', {'genres': genres})
+
 
 def list_podcast(request):
     query = """
@@ -77,8 +81,14 @@ def add_episode(request, id_konten):
         durasi = request.POST.get('durasi')
         query = "INSERT INTO EPISODE (id_episode, id_konten_podcast, judul, deskripsi, durasi, tanggal_rilis) VALUES (gen_random_uuid(), %s, %s, %s, %s, CURRENT_DATE)"
         execute_query(query, [id_konten, judul, deskripsi, durasi])
+
+        # Update the total duration in the PODCAST table
+        update_query = "UPDATE KONTEN SET durasi = durasi + %s WHERE id = %s"
+        execute_query(update_query, [durasi, id_konten])
+
         return redirect('kelola_podcast:list_episodes', id_konten=id_konten)
     return render(request, 'add_episode.html', {'id_konten': id_konten})
+
 
 def list_episodes(request, id_konten):
     query = "SELECT * FROM EPISODE WHERE id_konten_podcast = %s"

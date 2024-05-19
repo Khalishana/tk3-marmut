@@ -1,11 +1,13 @@
 from django.urls import path
-from kelola_podcast.views import create_episode, create_podcast, daftar_episode, list_podcast
+from . import views
 
 app_name = 'kelola_podcast'
 
 urlpatterns = [
-    path('create_episode', create_episode, name='create_episode'),
-    path('create_podcast', create_podcast, name='create_podcast'),
-    path('daftar_episode', daftar_episode, name='daftar_episode'),
-    path('list_podcast', list_podcast, name='list_podcast'),
+    path('create_podcast/', views.create_podcast, name='create_podcast'),
+    path('list_podcast/', views.list_podcast, name='list_podcast'),
+    path('delete_podcast/<uuid:id_konten>/', views.delete_podcast, name='delete_podcast'),
+    path('add_episode/<uuid:id_konten>/', views.add_episode, name='add_episode'),
+    path('list_episodes/<uuid:id_konten>/', views.list_episodes, name='list_episodes'),
+    path('delete_episode/<uuid:id_episode>/<uuid:id_konten>/', views.delete_episode, name='delete_episode'),
 ]

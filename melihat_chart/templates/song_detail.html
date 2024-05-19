@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song Detail</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        p {
+            margin-bottom: 10px;
+        }
+        a {
+            text-decoration: none;
+            color: blue;
+        }
+        a:hover {
+            color: darkblue;
+        }
+    </style>
+</head>
+<body>
+    <h1>Song Detail</h1>
+    <h2>{{ song.judul }}</h2>
+    <p><strong>Artist:</strong> {{ song.artist }}</p>
+    <p><strong>Tanggal Rilis:</strong> {{ song.tanggal_rilis }}</p>
+    <p><strong>Total Plays:</strong> {{ song.total_play }}</p>
+    <p><strong>Total Downloads:</strong> {{ song.total_download }}</p>
+    <br>
+    <a href="javascript:history.back()">Kembali</a>
+</body>
+</html>
+{% endblock %}

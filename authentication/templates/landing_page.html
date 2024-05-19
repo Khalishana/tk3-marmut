@@ -5,16 +5,59 @@
 {% endblock meta_title %}
 
 {% block content %}
-
-    <!-- background color -->
-    <head>
+<head>
     <style>
-        body{background-color: #a08679;}
-        .center-text {
-        text-align: center;
-    }
+        body {background-color: #a08679;}
+        .center-text {text-align: center;}
     </style>
-    </head>
+</head>
 
+<div class="container mt-4" style="text-align: center;">
+    <h1 class="mb-4" style="color: whitesmoke;">Welcome to Marmut Dashboard</h1>
+    <div class="center-text" style="color: whitesmoke;">
+        <p><strong>Nama:</strong> {{ nama }}</p>
+        <p><strong>Email:</strong> {{ email }}</p>
+        
+        {% if not is_label %}
+            {% if kota_asal %}
+            <p><strong>Kota Asal:</strong> {{ kota_asal }}</p>
+            {% endif %}
+            
+            {% if gender %}
+            <p><strong>Gender:</strong> {{ gender }}</p>
+            {% endif %}
+            
+            {% if tempat_lahir %}
+            <p><strong>Tempat Lahir:</strong> {{ tempat_lahir }}</p>
+            {% endif %}
+            
+            {% if tanggal_lahir %}
+            <p><strong>Tanggal Lahir:</strong> {{ tanggal_lahir }}</p>
+            {% endif %}
+            
+            {% if status_langganan %}
+            <p><strong>Status Langganan:</strong> {{ status_langganan }}</p>
+            {% endif %}
 
+            <p><strong>Role:</strong> {{ role }}</p>
+        {% endif %}
+        
+        {% if kontak %}
+        <p><strong>Kontak:</strong> {{ kontak }}</p>
+        {% endif %}
+
+        {% if 'Pengguna Biasa' in role %}
+            <h2>Daftar Playlist:</h2>
+            {% if playlists %}
+                <ul>
+                {% for playlist in playlists %}
+                    <li>{{ playlist }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>Belum Memiliki Playlist</p>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
 {% endblock content %}

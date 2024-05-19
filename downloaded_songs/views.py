@@ -72,7 +72,7 @@ def search_bar(request):
                     'title': result[1],
                     'by': result[2],
                     'id': result[3],
-                    'url': f"/play_podcast/podcast/{result[3]}",
+                    'url': f"/kelola_podcast/list_episodes/{result[3]}",
                     'id_playlist': None  
                 }
 
@@ -92,6 +92,7 @@ def search_bar(request):
                     'title': result[1],
                     'by': result[2],
                     'id': result[3],
+                    'url': f"/manage_playlistsong_detail/{result[3]}",
                     'id_playlist': None  
                 }
 
@@ -99,9 +100,10 @@ def search_bar(request):
 
             # Searching in User Playlists
             cursor.execute("""
-                SELECT 'USER PLAYLIST' AS type, up.judul AS judul, COALESCE(a.nama, 'Unknown') AS oleh, up.id_playlist
+                SELECT 'USER PLAYLIST' AS type, up.judul AS judul, COALESCE(a.nama, 'Unknown') AS oleh, p.id
                 FROM user_playlist up
                 JOIN akun a ON up.email_pembuat = a.email
+                CROSS JOIN playlist p
                 WHERE LOWER(up.judul) LIKE %s
             """, [f"%{query}%"])
             playlist_results = cursor.fetchall()
@@ -112,7 +114,8 @@ def search_bar(request):
                         'title': result[1],
                         'by': result[2],
                         'id': result[3],
-                        'id_playlist': result[3]  
+                        'url': f"/manage_playlistdetail/{result[3]}",
+                        'id_playlist': None  
                     }
 
             print("Playlist Results:", playlist_results)

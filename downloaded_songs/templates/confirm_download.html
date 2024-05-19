@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block meta_title %}
+    Marmut Page
+{% endblock meta_title %}
+
+{% block content %}
+<div class="container mt-4">
+    {% if error_message %}
+        <div class="alert alert-danger text-center">
+            {{ error_message }}
+        </div>
+    {% else %}
+        <div class="alert alert-success text-center">
+            {{ message }}
+        </div>
+    {% endif %}
+    <div class="d-flex justify-content-center">
+        <a href="{% url 'kelola_playlist:manage_playlists' %}" class="btn btn-primary me-2">Ke Playlist</a>
+        <a href="javascript:history.back()" class="btn btn-secondary">Kembali</a>
+    </div>
+</div>
+{% endblock content %}

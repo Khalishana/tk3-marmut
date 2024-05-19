@@ -18,27 +18,99 @@
 </head>
 <body>
     <div class="container">
-        <h2>CREATE ALBUM</h2>
-        <form action="http://localhost:8000/kelola/album" method="GET"> <!-- nanti ubah jadi POST -->
+        <h1 class="mt-4 mb-4">Buat Album</h1>
+        <form method="POST">
+            {% csrf_token %}
             <div class="form-group">
-                <label for="judul">Judul:</label>
-                <input type="text" class="form-control" id="judul" placeholder="Masukkan Judul Album">
+                <label for="judul_album">Judul Album:</label>
+                <input type="text" class="form-control" id="judul_album" name="judul_album" required>
             </div>
             <div class="form-group">
                 <label for="label">Label:</label>
-                <select class="form-control" id="label">
-                    <option value="">Pilih Label</option>
-                    <option value="Sony Music">Sony Music</option>
-                    <option value="Universal Music Group">Universal Music Group</option>
-                    <option value="Warner Music Group">Warner Music Group</option>
-                    <option value="Columbia Records">Columbia Records</option>
-                    <option value="Interscope Records">Interscope Records</option>
+                <select class="form-control" id="label" name="label">
+                    {% for label in list_label %}
+                        <option value="{{ label.0 }}">{{ label.1 }}</option>
+                    {% endfor %}
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary mt-3">SUBMIT</button>
+
+            <h1 class="mt-4 mb-4">Create Song</h1>
+            <div class="form-group">
+                <label for="judul">Judul:</label>
+                <input type="text" class="form-control" id="judul" name="judul" placeholder="Masukkan Judul Lagu" required>
+            </div>
+            <div class="form-group">
+                <label for="artist">Artist:</label>
+                {% if 'artist' in role %}
+                    <input type="text" class="form-control" id="artist" name="artist" value="{{ nama_artist }}" readonly>
+                {% else %}
+                    <select name="artist" class="form-control" id="artist" required>
+                    {% for artist in list_artist %}
+                        <option value="{{ artist.0 }}">{{ artist.3 }}</option>
+                    {% endfor %}
+                    </select>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="songwriter">Songwriter:</label>
+                <div class="btn-group-toggle" data-toggle="buttons">
+                    {% for songwriter in list_songwriter %}
+                        <label class="btn btn-light active m-2">
+                            <input type="checkbox" id="songwriter_{{ songwriter.0 }}" name="songwriter[]" value="{{ songwriter.0 }}" autocomplete="off" {% if songwriter.1 == request.COOKIES.email %}checked disabled{% endif %} > {{ songwriter.3 }}
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="genre">Genre:</label>
+                <div id="genreList" class="btn-group-toggle" data-toggle="buttons">
+                    {% for record in genre %}
+                        <label class="btn btn-light active m-2">
+                            <input type="checkbox" id="genre_{{ record.0 }}" name="genre[]" value="{{ record.0 }}" autocomplete="off"> {{ record.0 }}
+                        </label>
+                    {% endfor %}
+                </div>
+                <button type="button" id="moreButton" class="btn btn-link">More</button>
+                <button type="button" id="lessButton" class="btn btn-link" style="display: none;">Less</button>
+            </div>
+            <div class="form-group">
+                <label for="durasi">Durasi:</label>
+                <input type="text" class="form-control" id="durasi" name="durasi" placeholder="Masukkan Durasi Lagu" required>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Buat Album</button>
         </form>
     </div>
 </body>
-
 </html>
+<script>
+    var genreList = document.getElementById('genreList');
+    var moreButton = document.getElementById('moreButton');
+    var lessButton = document.getElementById('lessButton');
+    var genreItems = Array.from(genreList.getElementsByClassName('btn'));
+
+    genreItems.forEach(function(item, index) {
+        if (index >= 10) { 
+            item.style.display = 'none';
+        }
+    });
+
+    moreButton.addEventListener('click', function() {
+
+        genreItems.forEach(function(item) {
+            item.style.display = 'inline-block';
+        });
+        moreButton.style.display = 'none';  
+        lessButton.style.display = 'inline';  
+    });
+
+    lessButton.addEventListener('click', function() {
+        genreItems.forEach(function(item, index) {
+            if (index >= 5) {
+                item.style.display = 'none';
+            }
+        });
+        lessButton.style.display = 'none'; 
+        moreButton.style.display = 'inline';  
+    });
+</script>
 {% endblock content %}

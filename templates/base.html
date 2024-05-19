@@ -26,10 +26,15 @@
                         <a class="nav-link" href="{% url 'melihat_chart:chart_list' %}">Chart</a>
                     </li>
                     <li class="nav-item" data-role="regular_user,artist,songwriter,podcaster">
-                        <form class="d-flex">    
+                        <!-- <form class="d-flex">    
                             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                             <button class="btn btn-outline-light" type="submit">Search</button>
+                        </form> -->
+                        <form class="d-flex" method="get" action="{% url 'downloaded_songs:search_bar' %}">
+                            <input class="form-control me-2" type="search" name="query" placeholder="Find song, podcast, playlist" aria-label="Search">
+                            <button class="btn btn-outline-light" type="submit">Search</button>
                         </form>
+                        
                     </li>
                     <li class="nav-item" data-role="regular_user,artist,songwriter,podcaster">
                         <a class="nav-link" href="{% url 'kelola_playlist:manage_playlists' %}">Kelola Playlist</a>
@@ -38,13 +43,13 @@
                         <a class="nav-link" href="{% url 'langganan:show_paket_langganan' %}">Langganan Paket</a>
                     </li>
                     <li class="nav-item" data-premium="true">
-                        <a class="nav-link" href="#">Kelola Downloaded Songs</a>
+                        <a class="nav-link" href="{% url 'downloaded_songs:show_downloaded_songs' %}">Kelola Downloaded Songs</a>
                     </li>
                     <li class="nav-item" data-role="podcaster">
                         <a class="nav-link" href="{% url 'kelola_podcast:create_podcast' %}">Kelola Podcast</a>
                     </li>
                     <li class="nav-item" data-role="artist,songwriter">
-                        <a class="nav-link" href="#">Kelola Album & Songs</a>
+                        <a class="nav-link" href="{% url 'kelola_alsong:show_kelola_album' %}">Kelola Album & Songs</a>
                     </li>
                     <li class="nav-item" data-role="label">
                         <a class="nav-link" href="{% url 'album_song:show_album' %}">Kelola Album</a>

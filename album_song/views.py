@@ -101,7 +101,7 @@ def delete_song(request):
     conn = get_db_connection()
     cur = conn.cursor()
     
-    cur.execute("DELETE FROM konten WHERE id = %s", (song_id,))
+    cur.execute("DELETE FROM song WHERE id_konten = %s", (song_id,))
     
     conn.commit()
     cur.close()

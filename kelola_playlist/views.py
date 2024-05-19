@@ -100,15 +100,17 @@ def playlist_detail(request, id):
         FROM user_playlist p
         JOIN akun a ON p.email_pembuat = a.email
         WHERE p.id_playlist = %s
-    """, (id))
+    """, (id, ))
     playlist = cur.fetchone()
     
     if not playlist:
         cur.close()
         conn.close()
         return HttpResponse("Playlist tidak ditemukan", status=404)
-    
-    pemilik_sebenarnya = email and playlist[8]
+    pemilik_sebenarnya = False
+    if email == playlist[8]:
+        pemilik_sebenarnya = True
+    print(email, playlist[8], pemilik_sebenarnya)
     
     playlist_data = {
         'id_user_playlist': playlist[0],

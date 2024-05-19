@@ -40,7 +40,9 @@
                 <td>{{ song.artist }}</td>
                 <td>{{ song.durasi }} menit</td>
                 <td>
-                  <div class="text-center mb-2"> <a href="{% url 'kelola_playlist:song_detail' playlist.id song.id %}" class="btn btn-info btn-sm mr-1">Lihat</a> </div>
+                  <div class="text-center mb-2"> 
+                    <a href="{% url 'kelola_playlist:song_detail' playlist.id song.id %}" class="btn btn-info btn-sm mr-1">Lihat</a> 
+                  </div>
                   <div class="text-center mb-2"> 
                     <form action="{% url 'kelola_playlist:play_song' playlist.id song.id %}" method="post">
                       {% csrf_token %}
@@ -54,6 +56,7 @@
                       <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
                     </form>
                   </div>
+                  {% endif %}
                 </td>
               </tr>
               {% endfor %}
@@ -62,6 +65,7 @@
         </div>
         {% if playlist.pemilik %}
         <a href="{% url 'kelola_playlist:add_song' playlist.id %}" class="btn btn-primary">Tambah Lagu</a>
+        {% endif %}
       </div>
     </div>
   </div>

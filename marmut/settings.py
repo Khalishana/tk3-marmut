@@ -151,3 +151,5 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = ['https://web-production-8be4.up.railway.app']
+CSRF_ALLOWED_ORIGINS = ['https://web-production-8be4.up.railway.app']
+CORS_ORIGINS_WHITELIST = ['https://web-production-8be4.up.railway.app']

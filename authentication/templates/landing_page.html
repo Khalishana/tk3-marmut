@@ -1,63 +1,199 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block meta_title %}
     Marmut Page
 {% endblock meta_title %}
 
 {% block content %}
 <head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <style>
-        body {background-color: #a08679;}
-        .center-text {text-align: center;}
+        body {
+            background-color: #a08679; 
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            color: whitesmoke;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Dua kolom dengan lebar yang sama */
+            height: 100vh; /* Tinggi penuh viewport */
+            margin: 0;
+        }
+
+        .text-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+            text-align: center;
+            margin-top: -50px;
+            /* margin-left: 50px; */
+            margin-right: -100px;
+        }
+
+        .text-container h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: .15em solid #fff; /* Kursor berkedip */
+            animation: typing 4s steps(40, end), blink-caret .75s step-end 4s forwards;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #fff }
+        }
+
+        .image-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin-top: -50px;
+            margin-right: -100px;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .btn-grad {
+            background-image: linear-gradient(to right, #FF5F6D 0%, #FFC371  51%, #FF5F6D  100%);
+            margin: 10px;
+            padding: 15px 45px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;            
+            box-shadow: 0 0 20px #eee;
+            border-radius: 10px;
+            display: block;
+        }
+
+        .btn-grad:hover {
+            background-position: right center; /* change the direction of the change here */
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .additional-info {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .btn-custom {
+            color: #fff;
+            border: 1px solid #a08679;
+            background-color: #a08679;
+            width: 250px;
+        }
+
+        .btn-custom:hover {
+            color: #a08679;
+            background-color: transparent;
+            border-color: #a08679;
+        }
+
+        .modal-body, .modal-header, .modal-footer {
+            color: black;
+            text-align: center;
+        }
     </style>
 </head>
 
-<div class="container mt-4" style="text-align: center;">
-    <h1 class="mb-4" style="color: whitesmoke;">Welcome to Marmut Dashboard</h1>
-    <div class="center-text" style="color: whitesmoke;">
-        <p><strong>Nama:</strong> {{ nama }}</p>
-        <p><strong>Email:</strong> {{ email }}</p>
-        
-        {% if not is_label %}
-            {% if kota_asal %}
-            <p><strong>Kota Asal:</strong> {{ kota_asal }}</p>
-            {% endif %}
-            
-            {% if gender %}
-            <p><strong>Gender:</strong> {{ gender }}</p>
-            {% endif %}
-            
-            {% if tempat_lahir %}
-            <p><strong>Tempat Lahir:</strong> {{ tempat_lahir }}</p>
-            {% endif %}
-            
-            {% if tanggal_lahir %}
-            <p><strong>Tanggal Lahir:</strong> {{ tanggal_lahir }}</p>
-            {% endif %}
-            
-            {% if status_langganan %}
-            <p><strong>Status Langganan:</strong> {{ status_langganan }}</p>
-            {% endif %}
+<div class="container">
+    <!-- Text Container -->
+    <div class="text-container">
+        <h1>Welcome to Marmut Page,<br> {{ nama }}!</h1>
+        <!-- Account Detail Button -->
+        <button type="button" class="btn btn-grad" data-toggle="modal" data-target="#accountDetailModal">Account Detail</button>
+    </div>
 
-            <p><strong>Role:</strong> {{ role }}</p>
-        {% endif %}
-        
-        {% if kontak %}
-        <p><strong>Kontak:</strong> {{ kontak }}</p>
-        {% endif %}
-
-        {% if 'Pengguna Biasa' in role %}
-            <h2>Daftar Playlist:</h2>
-            {% if playlists %}
-                <ul>
-                {% for playlist in playlists %}
-                    <li>{{ playlist }}</li>
-                {% endfor %}
-                </ul>
-            {% else %}
-                <p>Belum Memiliki Playlist</p>
-            {% endif %}
-        {% endif %}
+    <!-- Image Container -->
+    <div class="image-container">
+        <img src="{% static 'authentication/images/marmut.png' %}" alt="Marmut Logo">
     </div>
 </div>
+
+<!-- Account Detail Modal -->
+<div class="modal fade" id="accountDetailModal" tabindex="-1" role="dialog" aria-labelledby="accountDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="accountDetailModalLabel">Account Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Nama:</strong> {{ nama }}</p>
+                <p><strong>Email:</strong> {{ email }}</p>
+
+                {% if not is_label %}
+                    {% if kota_asal %}
+                    <p><strong>Kota Asal:</strong> {{ kota_asal }}</p>
+                    {% endif %}
+                    
+                    {% if gender %}
+                    <p><strong>Gender:</strong> {{ gender }}</p>
+                    {% endif %}
+                    
+                    {% if tempat_lahir %}
+                    <p><strong>Tempat Lahir:</strong> {{ tempat_lahir }}</p>
+                    {% endif %}
+                    
+                    {% if tanggal_lahir %}
+                    <p><strong>Tanggal Lahir:</strong> {{ tanggal_lahir }}</p>
+                    {% endif %}
+                    
+                    {% if status_langganan %}
+                    <p><strong>Status Langganan:</strong> {{ status_langganan }}</p>
+                    {% endif %}
+
+                    <p><strong>Role:</strong> {{ role }}</p>
+                {% endif %}
+                
+                {% if kontak %}
+                <p><strong>Kontak:</strong> {{ kontak }}</p>
+                {% endif %}
+
+                {% if 'Pengguna Biasa' in role %}
+                    <h2>Daftar Playlist:</h2>
+                    {% if playlists %}
+                        <ul>
+                        {% for playlist in playlists %}
+                            <li>{{ playlist }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>Belum Memiliki Playlist</p>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-custom" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock content %}
